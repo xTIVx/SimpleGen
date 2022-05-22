@@ -33,9 +33,9 @@ class GeneSetView: UIView {
         )
     }
 
-    func setupBestCombo(bestCombo: [Letter]) {
+    func setupBestCombo(bestCombo: Crop) {
 
-        bestCombo.forEach {
+        bestCombo.letters.forEach {
             let letterView = CircledGenLetterView()
             letterView.setupView(letter: $0.key, height: 40)
             self.stackView.addArrangedSubview(letterView)

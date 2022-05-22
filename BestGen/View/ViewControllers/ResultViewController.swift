@@ -57,12 +57,20 @@ class ResultViewController: UIViewController {
         return label
     }()
 
-    init(allCrops: [[Letter]], preferredCombo: [LetterKey: Int] ) {
+    init(allCrops: [Crop], preferredCombo: [LetterKey: Int] ) {
         super.init(nibName: nil, bundle: nil)
         self.viewModel = ResultViewModel(allCrops: allCrops, preferredCombo: preferredCombo)
-        self.viewModel.compareBestCrops()
-//        let match = self.viewModel.searchBestCrop()
-//        bestComboView.setupBestCombo(bestCombo: match)
+
+        let match = self.viewModel.compareBestCrops()
+        if match.count == 1 {
+            bestComboLabel.text = "We found perfect match for you!"
+            bestComboView.setupBestCombo(bestCombo: match.first!)
+        } else if match.count > 1 {
+            bestComboLabel.text = "Here all possible good combinations:"
+            bestComboView.setupBestCombo(bestCombo: match.last!)
+        } else {
+            bestComboLabel.text = "We don't have any good combinations for you, add more crops!"
+        }
     }
 
     required init?(coder: NSCoder) {

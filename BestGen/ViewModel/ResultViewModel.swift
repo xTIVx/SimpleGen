@@ -9,27 +9,27 @@ import Foundation
 
 class ResultViewModel {
 
-    var allCrops: [[Letter]]!
+    var allCrops: [Crop]!
     var preferredCombo: [LetterKey: Int]!
 
-    init(allCrops: [[Letter]], preferredCombo: [LetterKey: Int]) {
+    init(allCrops: [Crop], preferredCombo: [LetterKey: Int]) {
         self.allCrops = allCrops
         self.preferredCombo = preferredCombo
     }
 
-    // samples - комбинация из numberOfElements
-    // Получаем все возможные комбинации растений из общего списка
-    private func setupLetterChunk(samples: [[Letter]]) -> [Letter] {
-        var result = [Letter]()
+    // скрещиваем растения
+    private func setupLetterChunk(samples: [Crop]) -> Crop {
+        var result = Crop(letters: [Letter]())
+        result.parents = samples
         // Пробегаем по 6 генам которые гарантированно есть у растения
         for index in 0...5 {
-            var tempLetter = Letter(key: .X, parents: samples, comparedGens: nil)
+            var tempLetter = Letter(key: .X)
             var letterKeyPriority = [LetterKey : Float]()
 
-            samples.forEach { letters in
-                letterKeyPriority[letters[index].key] == nil ?
-                (letterKeyPriority[letters[index].key] = letters[index].v) :
-                (letterKeyPriority[letters[index].key]! += letters[index].v)
+            samples.forEach { crop in
+                letterKeyPriority[crop.letters[index].key] == nil ?
+                (letterKeyPriority[crop.letters[index].key] = crop.letters[index].weight) :
+                (letterKeyPriority[crop.letters[index].key]! += crop.letters[index].weight)
             }
 
             let sortedLetterKeys = letterKeyPriority.sorted(by: { $0.value > $1.value } )
@@ -40,10 +40,10 @@ class ResultViewModel {
 
             sortedLetterKeys.enumerated().forEach {
                 if $0.offset >= 1 && $0.element.value == maxValue {
-                    tempLetter.comparedGens?.append($0.element.key)
+                    result.letters[index].comparedGens?.append($0.element.key)
                 }
             }
-            result.append(tempLetter)
+            result.letters.append(tempLetter)
         }
 
         return result
@@ -51,7 +51,7 @@ class ResultViewModel {
 
 
     // n - количество элементов в одной комбинации (комбинировать по 3 или по 4 например)
-    func generateAllCombos( finalResult: inout [[[Letter]]], samples: [[Letter]], n: Int = 3) -> [[[Letter]]] {
+    func generateAllCombos( finalResult: inout [[Crop]], samples: [Crop], n: Int = 3) -> [[Crop]] {
         guard n <= samples.count && n <= 6 else { return finalResult }
 
         let allCombinations = allCrops.combinationsWithoutRepetition.filter {$0.count == n}
@@ -66,9 +66,9 @@ class ResultViewModel {
         return generateAllCombos(finalResult: &finalResult, samples: samples, n: n + 1)
     }
 
-    func countLetters(crop: [Letter]) -> [LetterKey: Int] {
+    func countLetters(crop: Crop) -> [LetterKey: Int] {
         var result = [LetterKey: Int]()
-        crop.forEach {
+        crop.letters.forEach {
             guard preferredCombo.keys.contains($0.key) else { return }
             result[$0.key] == nil ?
             (result[$0.key] = 1) :
@@ -77,7 +77,7 @@ class ResultViewModel {
         return result
     }
 
-    func setupLetter(samples: [[[Letter]]]) -> [[Letter]] {
+    func setupLetter(samples: [[Crop]]) -> [Crop] {
         return samples.map { setupLetterChunk(samples: $0) }
     }
 
@@ -90,7 +90,7 @@ class ResultViewModel {
         return result
     }
 
-    func searchForBestMatch(crops: [[Letter]]) -> [Letter]? {
+    func searchForBestMatch(crops: [Crop]) -> Crop? {
         var countedCrop = [Int: [LetterKey: Int]]()
         crops.enumerated().forEach { index, crop in
             countedCrop[index] = countLetters(crop: crop)
@@ -101,12 +101,12 @@ class ResultViewModel {
         return nil
     }
 
-    func searchAllBestCrops() -> [[Letter]] {
-        var allAcceptedCrops = [[Letter]]()
+    func searchAllBestCrops() -> [Crop] {
+        var allAcceptedCrops = [Crop]()
         if let crop = searchForBestMatch(crops: allCrops) {
             allAcceptedCrops.append(crop)
         }
-        var generatedCombos = [[[Letter]]]()
+        var generatedCombos = [[Crop]]()
         generatedCombos = generateAllCombos(finalResult: &generatedCombos, samples: allCrops)
         let crossbreededCrops = setupLetter(samples: generatedCombos)
 
@@ -117,15 +117,17 @@ class ResultViewModel {
         return allAcceptedCrops
     }
 
-    func compareBestCrops() {
+    func compareBestCrops() -> [Crop] {
         let crops = searchAllBestCrops()
         let countedBestCrops = crops.enumerated().map { [$0.offset : countLetters(crop: $0.element)] }.first
         // [0: [BestGen.LetterKey.Y: 2, BestGen.LetterKey.G: 1]]
-        var best = [Letter]()
-        if let perfectMatch = countedBestCrops?.filter { $0.value == preferredCombo }.keys.first {
-            best = crops[perfectMatch]
+        var best = crops
+
+        if let perfectMatch = countedBestCrops?.filter({ $0.value == preferredCombo }).keys.first {
+            best = [crops[perfectMatch]]
         }
-        //        let closest = playerGuesses.min { abs($0.1 - x) < abs($1.1 - x) }
+
+        return best
     }
 
 

@@ -158,7 +158,12 @@ class MainViewController: UIViewController {
             } else if viewModel.getPreferredCombo().values.reduce(0, { $0 + $1 }) != 6 {
                 showAlert(alertType: .preferredCombo)
             } else if viewModel.isAllLettersAreSet() {
-                present(ResultViewController(allCrops: viewModel.getAllCrops(), preferredCombo: viewModel.sendPreferredCombo()), animated: true)
+                let bestCalculatedCrops = viewModel.compareBestCrops()
+                if bestCalculatedCrops.count > 1 {
+                    present(ChooseOptionsViewController(), animated: true)
+                } else {
+                    present(ResultViewController(allCrops: viewModel.getAllCrops(), preferredCombo: viewModel.sendPreferredCombo()), animated: true)
+                }
             } else {
                 showAlert(alertType: .foundEmptyGene)
             }

@@ -14,9 +14,9 @@ class GenesTableViewCell: UITableViewCell {
     private var row: Int!
     var removeButtonTapped: (() -> ())?
     var genButtonTapped: ((Int) -> ())?
-    private var crop: [Letter]? {
+    private var crop: Crop? {
         didSet {
-            crop?.enumerated().forEach {
+            crop?.letters.enumerated().forEach {
                 switch $0.offset {
                 case 0:
                     $0.element.key != .empty ?
@@ -127,7 +127,7 @@ class GenesTableViewCell: UITableViewCell {
         return button
     }()
 
-    func setupCell(crop: [Letter]) {
+    func setupCell(crop: Crop) {
         self.crop = crop
     }
 

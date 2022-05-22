@@ -7,11 +7,15 @@
 
 import Foundation
 
+struct Crop {
+    var letters: [Letter]
+    var parents: [Crop]?
+}
+
 struct Letter {
     var key: LetterKey = .empty
-    var parents: [[Letter]]?
     var comparedGens: [LetterKey]?
-    var v: Float {
+    var weight: Float {
         switch key {
         case .Y:
             return 1
