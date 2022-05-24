@@ -12,6 +12,9 @@
 		464826042832EEF400E56ED4 /* ResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464826032832EEF400E56ED4 /* ResultViewController.swift */; };
 		464826062832EF0D00E56ED4 /* ResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464826052832EF0D00E56ED4 /* ResultViewModel.swift */; };
 		46482608283303FE00E56ED4 /* GeneSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46482607283303FE00E56ED4 /* GeneSetView.swift */; };
+		4648260C28398E0A00E56ED4 /* CropPresentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4648260B28398E0A00E56ED4 /* CropPresentTableViewCell.swift */; };
+		46482610283B398B00E56ED4 /* CircledDoubleGenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4648260F283B398B00E56ED4 /* CircledDoubleGenView.swift */; };
+		46482613283DA20B00E56ED4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46482612283DA20B00E56ED4 /* StoreKit.framework */; };
 		46A94F412827419C0014F6BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F402827419C0014F6BE /* AppDelegate.swift */; };
 		46A94F432827419C0014F6BE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F422827419C0014F6BE /* SceneDelegate.swift */; };
 		46A94F452827419C0014F6BE /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F442827419C0014F6BE /* MainViewController.swift */; };
@@ -34,6 +37,9 @@
 		464826032832EEF400E56ED4 /* ResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultViewController.swift; sourceTree = "<group>"; };
 		464826052832EF0D00E56ED4 /* ResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultViewModel.swift; sourceTree = "<group>"; };
 		46482607283303FE00E56ED4 /* GeneSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneSetView.swift; sourceTree = "<group>"; };
+		4648260B28398E0A00E56ED4 /* CropPresentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropPresentTableViewCell.swift; sourceTree = "<group>"; };
+		4648260F283B398B00E56ED4 /* CircledDoubleGenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircledDoubleGenView.swift; sourceTree = "<group>"; };
+		46482612283DA20B00E56ED4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		46A94F3D2827419C0014F6BE /* BestGen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BestGen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		46A94F402827419C0014F6BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		46A94F422827419C0014F6BE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -57,17 +63,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46482613283DA20B00E56ED4 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		46482611283DA20B00E56ED4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				46482612283DA20B00E56ED4 /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		46A94F342827419C0014F6BE = {
 			isa = PBXGroup;
 			children = (
 				46A94F3F2827419C0014F6BE /* BestGen */,
 				46A94F3E2827419C0014F6BE /* Products */,
+				46482611283DA20B00E56ED4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -141,6 +157,7 @@
 			children = (
 				46A94F60282C3EEC0014F6BE /* GenesTableViewCell.swift */,
 				46A94F6D282D686E0014F6BE /* ChooseGenPopup.swift */,
+				4648260B28398E0A00E56ED4 /* CropPresentTableViewCell.swift */,
 			);
 			path = ViewCell;
 			sourceTree = "<group>";
@@ -182,6 +199,7 @@
 				46B3A94F28308A4E00DBB0AA /* CircledGenLetterView.swift */,
 				464826012831E12600E56ED4 /* PreferredLetterButton.swift */,
 				46482607283303FE00E56ED4 /* GeneSetView.swift */,
+				4648260F283B398B00E56ED4 /* CircledDoubleGenView.swift */,
 			);
 			path = CustomizedViews;
 			sourceTree = "<group>";
@@ -256,6 +274,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46482610283B398B00E56ED4 /* CircledDoubleGenView.swift in Sources */,
 				46A94F6E282D686F0014F6BE /* ChooseGenPopup.swift in Sources */,
 				46A94F5A282C2EA60014F6BE /* Array+Utils.swift in Sources */,
 				46B3A94E283073A800DBB0AA /* PreferredPatternView.swift in Sources */,
@@ -272,6 +291,7 @@
 				46B3A95028308A4E00DBB0AA /* CircledGenLetterView.swift in Sources */,
 				46A94F5E282C2F3D0014F6BE /* MainViewModel.swift in Sources */,
 				46A94F67282CA6150014F6BE /* UIButton+Utils.swift in Sources */,
+				4648260C28398E0A00E56ED4 /* CropPresentTableViewCell.swift in Sources */,
 				46A94F6C282CAC540014F6BE /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

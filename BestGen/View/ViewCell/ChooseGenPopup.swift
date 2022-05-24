@@ -81,7 +81,6 @@ class ChooseGenPopup: UIView {
 
     init() {
         super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-
         setupView()
     }
 
@@ -152,7 +151,6 @@ class ChooseGenPopup: UIView {
         } completion: { _ in
             self.isHidden = true
         }
-
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

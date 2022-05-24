@@ -22,23 +22,26 @@ class GeneSetView: UIView {
         super.init(frame: CGRect.zero)
         setupView()
 
-
         NSLayoutConstraint.activate(
             [
-
                 stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
                 stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
-                heightAnchor.constraint(equalToConstant: 60)
             ]
         )
     }
 
-    func setupBestCombo(bestCombo: [Letter]) {
+    func setupBestCombo(bestCombo: Crop) {
 
-        bestCombo.forEach {
-            let letterView = CircledGenLetterView()
-            letterView.setupView(letter: $0.key, height: 40)
-            self.stackView.addArrangedSubview(letterView)
+        bestCombo.letters.forEach {
+            if $0.comparedGens == nil {
+                let letterView = CircledGenLetterView()
+                letterView.setupView(letter: $0.key, height: 40)
+                self.stackView.addArrangedSubview(letterView)
+            } else {
+                let doubleletterView = CircledDoubleGenView()
+                doubleletterView.setupView(topLetter: $0.key, bottomLetter: $0.comparedGens![0], height: 40)
+                self.stackView.addArrangedSubview(doubleletterView)
+            }
         }
     }
 
@@ -53,5 +56,4 @@ class GeneSetView: UIView {
         layer.borderColor = Constants.Colors.mainGrey.cgColor
         layer.borderWidth = 2
     }
-
 }

@@ -158,7 +158,11 @@ class MainViewController: UIViewController {
             } else if viewModel.getPreferredCombo().values.reduce(0, { $0 + $1 }) != 6 {
                 showAlert(alertType: .preferredCombo)
             } else if viewModel.isAllLettersAreSet() {
-                present(ResultViewController(allCrops: viewModel.getAllCrops(), preferredCombo: viewModel.sendPreferredCombo()), animated: true)
+                if let bestCalculatedCrop = viewModel.findBest() {
+                    present(ResultViewController(crop: bestCalculatedCrop), animated: true)
+                } else {
+                    showAlert(alertType: .addMoreCrops)
+                }
             } else {
                 showAlert(alertType: .foundEmptyGene)
             }
@@ -186,7 +190,7 @@ private extension MainViewController {
 
         listOfCropsTableView.delegate = self
         listOfCropsTableView.dataSource = self
-        listOfCropsTableView.register(GenesTableViewCell.self, forCellReuseIdentifier: "cell")
+        listOfCropsTableView.register(GenesTableViewCell.self, forCellReuseIdentifier: GenesTableViewCell.identifier)
 
         view.addSubview(firstActionLabel)
         view.addSubview(listView)
@@ -246,7 +250,6 @@ private extension MainViewController {
                 calculateButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 calculateButton.topAnchor.constraint(greaterThanOrEqualTo: preferredPatternView.bottomAnchor, constant: 50),
                 calculateButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80),
-
             ]
         )
     }
@@ -258,7 +261,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? GenesTableViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: GenesTableViewCell.identifier, for: indexPath) as? GenesTableViewCell else { return UITableViewCell() }
 
         cell.resetSell()
 
@@ -301,21 +304,23 @@ private extension MainViewController {
                                       message: "Please fill in all genes or remove whole line.",
                                       preferredStyle: .alert)
         case .noGenes:
-            alert = UIAlertController(title: "No genes!",
-                                      message: "Please add at least 1 gene to continue.",
+            alert = UIAlertController(title: "No crops!",
+                                      message: "Please add at least 1 crop to continue.",
                                       preferredStyle: .alert)
-        case.preferredCombo:
+        case .preferredCombo:
             alert = UIAlertController(title: "There are unallocated combination points!",
                                       message: "Please indicate all 6 genes in the desired combination.",
+                                      preferredStyle: .alert)
+        case .addMoreCrops:
+            alert = UIAlertController(title: "Can't find any combos!",
+                                      message: "Please add more crops",
                                       preferredStyle: .alert)
         }
 
         alert.view.tintColor = UIColor.black
         alert.view.layer.cornerRadius = 15
 
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
-            print("Time to head home!")
-        }))
+        alert.addAction(UIAlertAction(title: "Ok", style: .default))
         self.present(alert, animated: true)
     }
 
@@ -323,5 +328,6 @@ private extension MainViewController {
         case foundEmptyGene
         case noGenes
         case preferredCombo
+        case addMoreCrops
     }
 }
