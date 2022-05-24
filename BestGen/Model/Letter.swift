@@ -10,6 +10,26 @@ import Foundation
 struct Crop {
     var letters: [Letter]
     var parents: [Crop]?
+    var betterScore: Int {
+        var score = 0
+        letters.forEach { letter in
+            switch letter.key {
+            case .Y:
+                score += 1
+            case .G:
+                score += 1
+            case .H:
+                score += 1
+            case .W:
+                score -= 1
+            case .X:
+                score -= 1
+            default:
+                break
+            }
+        }
+        return score
+    }
 }
 
 struct Letter {
@@ -18,15 +38,15 @@ struct Letter {
     var weight: Float {
         switch key {
         case .Y:
-            return 1
+            return 0.6
         case .G:
-            return 1
+            return 0.6
         case .H:
-            return 1
+            return 0.6
         case .W:
-            return 1.5
+            return 1.0
         case .X:
-            return 1.5
+            return 1.0
         default:
             return 0
         }

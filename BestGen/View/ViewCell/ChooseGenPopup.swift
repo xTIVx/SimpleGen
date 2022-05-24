@@ -81,7 +81,6 @@ class ChooseGenPopup: UIView {
 
     init() {
         super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-
         setupView()
     }
 
@@ -146,12 +145,18 @@ class ChooseGenPopup: UIView {
             self.popupView.transform = scaledAndTranslatedTransform
         })
     }
-    
     func moveOut() {
         UIView.animate(withDuration: 0.1, delay: 0, options: .beginFromCurrentState) {
             self.popupView.transform = CGAffineTransform.identity.scaledBy(x: 0.1, y: 0.1)
         } completion: { _ in
             self.isHidden = true
+        }
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch = touches.first
+        if touch?.view != popupView {
+            moveOut()
         }
     }
 }

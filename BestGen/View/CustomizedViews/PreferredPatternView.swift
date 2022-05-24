@@ -122,7 +122,6 @@ extension PreferredPatternView {
     }
 
     func setupConstraints() {
-
         NSLayoutConstraint.activate(
             [
                 heightAnchor.constraint(equalToConstant: 180),
@@ -145,7 +144,6 @@ extension PreferredPatternView {
                 yView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.25),
 
                 hView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.25),
-
             ]
         )
     }
@@ -153,7 +151,6 @@ extension PreferredPatternView {
     @objc func clearTapped() {
         counter = 0
         preferredCombo = [.G: 0, .Y: 0, .H: 0]
-
     }
 
     @objc func buttonTapped(sender: UITapGestureRecognizer) {

@@ -11,6 +11,8 @@ import UIKit
 
 class GenesTableViewCell: UITableViewCell {
 
+    static let identifier = "cell"
+
     private var row: Int!
     var removeButtonTapped: (() -> ())?
     var genButtonTapped: ((Int) -> ())?

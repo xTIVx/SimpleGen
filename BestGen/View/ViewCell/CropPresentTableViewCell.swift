@@ -9,24 +9,27 @@ import UIKit
 
 class CropPresentTableViewCell: UITableViewCell {
 
+    static let identifier = "cropPresentCell"
+
     private let cropView: GeneSetView = {
         let view = GeneSetView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.borderColor = .none
+        view.layer.borderWidth = 0
 
         return view
     }()
 
     func setupView() {
         backgroundColor = .clear
+        contentView.addSubview(cropView)
 
         NSLayoutConstraint.activate(
             [
-                cropView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-                cropView.topAnchor.constraint(equalTo: contentView.topAnchor),
-                cropView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                cropView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 20),
+                cropView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+                cropView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
                 cropView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
-
-                heightAnchor.constraint(equalToConstant: 60)
             ]
         )
     }
@@ -35,5 +38,4 @@ class CropPresentTableViewCell: UITableViewCell {
         cropView.setupBestCombo(bestCombo: crop)
         setupView()
     }
-
 }

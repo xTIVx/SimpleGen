@@ -49,7 +49,6 @@ class PreferredLetterButton: UIView {
 
     private func setupView() {
 
-
         backgroundColor = Constants.Colors.background
         isUserInteractionEnabled = true
         layer.borderColor = Constants.Colors.mainGreen.cgColor
@@ -69,5 +68,4 @@ class PreferredLetterButton: UIView {
             ]
         )
     }
-
 }

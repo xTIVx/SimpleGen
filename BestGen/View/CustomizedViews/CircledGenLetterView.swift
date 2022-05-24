@@ -42,7 +42,5 @@ class CircledGenLetterView: UIView {
                 letterLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
             ]
         )
-
     }
-
 }
