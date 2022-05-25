@@ -46,6 +46,8 @@ class MainViewModel {
     ]
     private var preferredCombo: [LetterKey: Int] = [.G: 4, .Y: 2, .H: 0]
 
+    private var topCrop: Crop?
+
     func isAllLettersAreSet() -> Bool {
         return crops.map { crop in
             crop.letters.filter { $0.key == .empty }
@@ -56,20 +58,24 @@ class MainViewModel {
 
     // MARK: CRUD funcs
 
+    func getTopCrop() -> Crop? {
+        self.topCrop
+    }
+
     func updatePreferredCombo(combo: [LetterKey: Int]) {
         preferredCombo = combo
     }
 
     func getPreferredCombo() -> [LetterKey: Int] {
-        return preferredCombo
+        preferredCombo
     }
 
     func sendPreferredCombo() -> [LetterKey: Int] {
-        return preferredCombo.filter { $0.value != 0 }
+        preferredCombo.filter { $0.value != 0 }
     }
 
     func getAllCrops() -> [Crop] {
-        return crops
+        crops
     }
 
     func addCropRow() {
@@ -85,11 +91,11 @@ class MainViewModel {
     }
 
     func getSamplesCount() -> Int {
-        return crops.count
+        crops.count
     }
 
     func getCrop(at row: Int) -> Crop {
-        return crops[row]
+        crops[row]
     }
 
     func updateCrop(crop: Int, letter: Int, newKey: LetterKey, completion: (()->())) {

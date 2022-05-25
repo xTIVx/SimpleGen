@@ -7,10 +7,39 @@
 
 import UIKit
 import Foundation
+import GoogleMobileAds
 
 class MainViewController: UIViewController {
 
     private let viewModel: MainViewModel = MainViewModel()
+
+    private let bottomBanner: GADBannerView = {
+        let banner = GADBannerView()
+        banner.translatesAutoresizingMaskIntoConstraints = false
+        banner.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        banner.backgroundColor = .secondarySystemFill
+        banner.load(GADRequest())
+
+        return banner
+    }()
+
+    private var mainRewardedAd: GADRewardedAd?
+
+    private let removeAds: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        let attributedString = NSAttributedString(string: "Remove ADS", attributes:
+                                                    [
+                                                        NSAttributedString.Key.font: Constants.Fonts.subTitle ?? UIFont(),
+                                                        NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
+                                                    ]
+        )
+        button.setAttributedTitle(attributedString, for: .normal)
+        button.setTitleColor(Constants.Colors.mainGreen, for: .normal)
+        button.tag = 200
+
+        return button
+    }()
 
     private let firstActionLabel: UILabel = {
         let label = UILabel()
@@ -140,6 +169,9 @@ class MainViewController: UIViewController {
             self.viewModel.updatePreferredCombo(combo: newValue)
             
         }
+        bottomBanner.rootViewController = self
+        loadRewardedAd()
+
     }
 
     @objc private func buttonTapped(_ sender: UIButton) {
@@ -158,14 +190,12 @@ class MainViewController: UIViewController {
             } else if viewModel.getPreferredCombo().values.reduce(0, { $0 + $1 }) != 6 {
                 showAlert(alertType: .preferredCombo)
             } else if viewModel.isAllLettersAreSet() {
-                if let bestCalculatedCrop = viewModel.findBest() {
-                    present(ResultViewController(crop: bestCalculatedCrop), animated: true)
-                } else {
-                    showAlert(alertType: .addMoreCrops)
-                }
+                showAd()
             } else {
                 showAlert(alertType: .foundEmptyGene)
             }
+        case 200:
+            print("REMOVE")
         default:
             break
         }
@@ -187,11 +217,13 @@ private extension MainViewController {
         addButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         clearButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         calculateButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        removeAds.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
 
         listOfCropsTableView.delegate = self
         listOfCropsTableView.dataSource = self
         listOfCropsTableView.register(GenesTableViewCell.self, forCellReuseIdentifier: GenesTableViewCell.identifier)
 
+        view.addSubview(removeAds)
         view.addSubview(firstActionLabel)
         view.addSubview(listView)
         view.addSubview(secondActionLabel)
@@ -202,6 +234,7 @@ private extension MainViewController {
         listView.addSubview(addButton)
         listView.addSubview(listOfCropsTableView)
         view.addSubview(popup)
+        view.addSubview(bottomBanner)
     }
 
     func setupConstraints() {
@@ -212,7 +245,10 @@ private extension MainViewController {
                 popup.trailingAnchor.constraint(equalTo: view.trailingAnchor),
                 popup.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-                firstActionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                removeAds.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                removeAds.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+
+                firstActionLabel.topAnchor.constraint(equalTo: removeAds.bottomAnchor, constant: 10),
                 firstActionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
 
                 listView.topAnchor.constraint(equalTo: firstActionLabel.bottomAnchor, constant: 5),
@@ -248,8 +284,13 @@ private extension MainViewController {
                 preferredPatternView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
 
                 calculateButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                calculateButton.topAnchor.constraint(greaterThanOrEqualTo: preferredPatternView.bottomAnchor, constant: 50),
-                calculateButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80),
+                calculateButton.topAnchor.constraint(greaterThanOrEqualTo: preferredPatternView.bottomAnchor, constant: 10),
+                calculateButton.bottomAnchor.constraint(equalTo: bottomBanner.topAnchor, constant: -20),
+
+                bottomBanner.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                bottomBanner.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                bottomBanner.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                bottomBanner.heightAnchor.constraint(equalToConstant: 50),
             ]
         )
     }
@@ -330,4 +371,47 @@ private extension MainViewController {
         case preferredCombo
         case addMoreCrops
     }
+}
+
+// Banners
+extension MainViewController: GADFullScreenContentDelegate {
+    func loadRewardedAd() {
+        let request = GADRequest()
+        GADRewardedAd.load(withAdUnitID:"ca-app-pub-3940256099942544/1712485313",
+                           request: request,
+                           completionHandler: { [self] ad, error in
+            if let error = error {
+                print("Failed to load rewarded ad with error: \(error.localizedDescription)")
+                return
+            }
+            mainRewardedAd = ad
+            print("Rewarded ad loaded.")
+            mainRewardedAd?.fullScreenContentDelegate = self
+        }
+        )
+    }
+
+    func showAd() {
+        if let ad = mainRewardedAd {
+            ad.present(fromRootViewController: self, userDidEarnRewardHandler: {})
+        } else {
+            if let crop = viewModel.getTopCrop() {
+                present(ResultViewController(crop: crop), animated: true)
+            } else {
+                showAlert(alertType: .addMoreCrops)
+            }
+        }
+    }
+
+    /// Tells the delegate that the ad failed to present full screen content.
+      func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
+          print("Ad did fail to present full screen content.")
+      }
+
+      /// Tells the delegate that the ad dismissed full screen content.
+      func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+          present(ResultViewController(crop: viewModel.findBest()!), animated: true)
+          loadRewardedAd()
+      }
+
 }
