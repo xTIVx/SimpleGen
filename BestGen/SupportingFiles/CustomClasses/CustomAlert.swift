@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class CustomAlert {
-    func showAlert(parent: UIViewController, alertType: AlertType) {
+    func showAlert(parent: UIViewController, alertType: AlertType, completion: (() -> ())? = nil) {
         var alert: UIAlertController!
 
         switch alertType {
@@ -35,14 +35,18 @@ class CustomAlert {
                                       preferredStyle: .alert)
         case .noCropsPayment:
             alert = UIAlertController(title: "Maximum crops achived!",
-                                      message: "Sorry, in the free version you can use only 5 crops, plz support developer and buy \"Crops\" or \"Full\" package",
+                                      message: "Sorry, in free version you can use only 5 crops, please buy \"Crops\" or \"Full\" package",
                                       preferredStyle: .alert)
         }
         
 
         alert.view.tintColor = UIColor.black
         alert.view.layer.cornerRadius = 15
-
+        if alertType == .noCropsPayment {
+            alert.addAction(UIAlertAction(title: "Buy", style: .default) {_ in
+                completion?()
+            })
+        }
         alert.addAction(UIAlertAction(title: "Ok", style: .default))
         parent.present(alert, animated: true)
     }

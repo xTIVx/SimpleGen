@@ -195,7 +195,9 @@ class MainViewController: UIViewController {
                 listOfCropsTableView.reloadData()
             } else {
                 if viewModel.getSamplesCount() >= 5 {
-                    CustomAlert().showAlert(parent: self, alertType: .noCropsPayment)
+                    CustomAlert().showAlert(parent: self, alertType: .noCropsPayment) {
+                        self.present(PurchasesViewController(), animated: true)
+                    }
                 } else {
                     viewModel.addCropRow()
                     clearButton.isHidden = false
