@@ -22,4 +22,12 @@ enum Constants {
         static let subTitle = UIFont(name: "Arial-BoldMT", size: 18)
         static let letterTitle = UIFont(name: "Arial-BoldMT", size: 24)
     }
+
+}
+
+enum Product: String, CaseIterable {
+    case free = "free"
+    case ads = "com.tiv.c.ads"
+    case crops = "com.tiv.c.crops"
+    case full = "com.tiv.c.full"
 }

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4610D3BF283EB032006D689E /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4610D3BE283EB032006D689E /* CustomAlert.swift */; };
+		4610D3C2283EBE82006D689E /* Purchases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4610D3C1283EBE82006D689E /* Purchases.swift */; };
+		4610D3C4283EC7F6006D689E /* Ads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4610D3C3283EC7F6006D689E /* Ads.swift */; };
 		464826002831B86F00E56ED4 /* UIView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464825FF2831B86F00E56ED4 /* UIView+Utils.swift */; };
 		464826022831E12600E56ED4 /* PreferredLetterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464826012831E12600E56ED4 /* PreferredLetterButton.swift */; };
 		464826042832EEF400E56ED4 /* ResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464826032832EEF400E56ED4 /* ResultViewController.swift */; };
@@ -15,6 +18,8 @@
 		4648260C28398E0A00E56ED4 /* CropPresentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4648260B28398E0A00E56ED4 /* CropPresentTableViewCell.swift */; };
 		46482610283B398B00E56ED4 /* CircledDoubleGenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4648260F283B398B00E56ED4 /* CircledDoubleGenView.swift */; };
 		46482613283DA20B00E56ED4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46482612283DA20B00E56ED4 /* StoreKit.framework */; };
+		4648261C283DED1D00E56ED4 /* PurchasesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4648261B283DED1D00E56ED4 /* PurchasesViewController.swift */; };
+		4648261E283DF00800E56ED4 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4648261D283DF00800E56ED4 /* PurchaseView.swift */; };
 		46A94F412827419C0014F6BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F402827419C0014F6BE /* AppDelegate.swift */; };
 		46A94F432827419C0014F6BE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F422827419C0014F6BE /* SceneDelegate.swift */; };
 		46A94F452827419C0014F6BE /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F442827419C0014F6BE /* MainViewController.swift */; };
@@ -33,6 +38,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4610D3BE283EB032006D689E /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
+		4610D3C1283EBE82006D689E /* Purchases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Purchases.swift; sourceTree = "<group>"; };
+		4610D3C3283EC7F6006D689E /* Ads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ads.swift; sourceTree = "<group>"; };
 		464825FF2831B86F00E56ED4 /* UIView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Utils.swift"; sourceTree = "<group>"; };
 		464826012831E12600E56ED4 /* PreferredLetterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferredLetterButton.swift; sourceTree = "<group>"; };
 		464826032832EEF400E56ED4 /* ResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultViewController.swift; sourceTree = "<group>"; };
@@ -41,6 +49,9 @@
 		4648260B28398E0A00E56ED4 /* CropPresentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropPresentTableViewCell.swift; sourceTree = "<group>"; };
 		4648260F283B398B00E56ED4 /* CircledDoubleGenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircledDoubleGenView.swift; sourceTree = "<group>"; };
 		46482612283DA20B00E56ED4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		4648261A283DE76200E56ED4 /* StoreConfig.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreConfig.storekit; sourceTree = "<group>"; };
+		4648261B283DED1D00E56ED4 /* PurchasesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesViewController.swift; sourceTree = "<group>"; };
+		4648261D283DF00800E56ED4 /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
 		46A94F3D2827419C0014F6BE /* BestGen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BestGen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		46A94F402827419C0014F6BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		46A94F422827419C0014F6BE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -82,6 +93,16 @@
 				6D327DF4F771A1F15BFDBE10 /* Pods-BestGen.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		4610D3C0283EBE63006D689E /* CustomClasses */ = {
+			isa = PBXGroup;
+			children = (
+				4610D3BE283EB032006D689E /* CustomAlert.swift */,
+				4610D3C1283EBE82006D689E /* Purchases.swift */,
+				4610D3C3283EC7F6006D689E /* Ads.swift */,
+			);
+			path = CustomClasses;
 			sourceTree = "<group>";
 		};
 		46482611283DA20B00E56ED4 /* Frameworks */ = {
@@ -152,9 +173,11 @@
 		46A94F57282C2E130014F6BE /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				4610D3C0283EBE63006D689E /* CustomClasses */,
 				46A94F6A282CAC420014F6BE /* Constants */,
 				46A94F69282CABCB0014F6BE /* Extensions */,
 				46A94F68282CABA80014F6BE /* System */,
+				4648261A283DE76200E56ED4 /* StoreConfig.storekit */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -164,6 +187,7 @@
 			children = (
 				46A94F442827419C0014F6BE /* MainViewController.swift */,
 				464826032832EEF400E56ED4 /* ResultViewController.swift */,
+				4648261B283DED1D00E56ED4 /* PurchasesViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -216,6 +240,7 @@
 				464826012831E12600E56ED4 /* PreferredLetterButton.swift */,
 				46482607283303FE00E56ED4 /* GeneSetView.swift */,
 				4648260F283B398B00E56ED4 /* CircledDoubleGenView.swift */,
+				4648261D283DF00800E56ED4 /* PurchaseView.swift */,
 			);
 			path = CustomizedViews;
 			sourceTree = "<group>";
@@ -338,6 +363,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4648261E283DF00800E56ED4 /* PurchaseView.swift in Sources */,
 				46482610283B398B00E56ED4 /* CircledDoubleGenView.swift in Sources */,
 				46A94F6E282D686F0014F6BE /* ChooseGenPopup.swift in Sources */,
 				46A94F5A282C2EA60014F6BE /* Array+Utils.swift in Sources */,
@@ -348,6 +374,8 @@
 				46A94F61282C3EEC0014F6BE /* GenesTableViewCell.swift in Sources */,
 				46A94F412827419C0014F6BE /* AppDelegate.swift in Sources */,
 				464826022831E12600E56ED4 /* PreferredLetterButton.swift in Sources */,
+				4610D3BF283EB032006D689E /* CustomAlert.swift in Sources */,
+				4610D3C4283EC7F6006D689E /* Ads.swift in Sources */,
 				46A94F432827419C0014F6BE /* SceneDelegate.swift in Sources */,
 				464826002831B86F00E56ED4 /* UIView+Utils.swift in Sources */,
 				46482608283303FE00E56ED4 /* GeneSetView.swift in Sources */,
@@ -355,6 +383,8 @@
 				46B3A95028308A4E00DBB0AA /* CircledGenLetterView.swift in Sources */,
 				46A94F5E282C2F3D0014F6BE /* MainViewModel.swift in Sources */,
 				46A94F67282CA6150014F6BE /* UIButton+Utils.swift in Sources */,
+				4610D3C2283EBE82006D689E /* Purchases.swift in Sources */,
+				4648261C283DED1D00E56ED4 /* PurchasesViewController.swift in Sources */,
 				4648260C28398E0A00E56ED4 /* CropPresentTableViewCell.swift in Sources */,
 				46A94F6C282CAC540014F6BE /* Constants.swift in Sources */,
 			);

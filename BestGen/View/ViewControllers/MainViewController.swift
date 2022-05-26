@@ -12,18 +12,10 @@ import GoogleMobileAds
 class MainViewController: UIViewController {
 
     private let viewModel: MainViewModel = MainViewModel()
-
-    private let bottomBanner: GADBannerView = {
-        let banner = GADBannerView()
-        banner.translatesAutoresizingMaskIntoConstraints = false
-        banner.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        banner.backgroundColor = .secondarySystemFill
-        banner.load(GADRequest())
-
-        return banner
-    }()
+    private var ads: Ads?
 
     private var mainRewardedAd: GADRewardedAd?
+    private var bottomBannerAd: GADBannerView?
 
     private let removeAds: UIButton = {
         let button = UIButton()
@@ -160,6 +152,20 @@ class MainViewController: UIViewController {
         return button
     }()
 
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        if Purchases.purchaseStatus == .free || Purchases.purchaseStatus == .crops {
+
+            ads = Ads(delegate: self)
+            mainRewardedAd = ads?.createRewardedAd()
+            bottomBannerAd = ads?.createSmallBanner(adUnitID: "ca-app-pub-3940256099942544/2934735716")
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -167,11 +173,13 @@ class MainViewController: UIViewController {
         preferredPatternView.preferredCombo = viewModel.getPreferredCombo()
         preferredPatternView.comboDidChange = { newValue in
             self.viewModel.updatePreferredCombo(combo: newValue)
-            
         }
-        bottomBanner.rootViewController = self
-        loadRewardedAd()
-
+        if let ads = self.ads {
+            ads.loadRewardedAd(withAdUnitID: "ca-app-pub-3940256099942544/1712485313") { [weak self] ad in
+                guard let self = self, let ad = ad else { return }
+                self.mainRewardedAd = ad
+            }
+        }
     }
 
     @objc private func buttonTapped(_ sender: UIButton) {
@@ -185,17 +193,20 @@ class MainViewController: UIViewController {
             clearButton.isHidden = false
             listOfCropsTableView.reloadData()
         case 101:
+            let alert = CustomAlert()
             if viewModel.getSamplesCount() == 0 {
-                showAlert(alertType: .noGenes)
+                alert.showAlert(parent: self, alertType: .noGenes)
             } else if viewModel.getPreferredCombo().values.reduce(0, { $0 + $1 }) != 6 {
-                showAlert(alertType: .preferredCombo)
+                alert.showAlert(parent: self, alertType: .preferredCombo)
             } else if viewModel.isAllLettersAreSet() {
-                showAd()
+                if let rewardedAd = self.mainRewardedAd {
+                    ads?.showRewardedAd(rewardedAd: rewardedAd)
+                }
             } else {
-                showAlert(alertType: .foundEmptyGene)
+                alert.showAlert(parent: self, alertType: .foundEmptyGene)
             }
         case 200:
-            print("REMOVE")
+            present(PurchasesViewController(), animated: true)
         default:
             break
         }
@@ -234,7 +245,9 @@ private extension MainViewController {
         listView.addSubview(addButton)
         listView.addSubview(listOfCropsTableView)
         view.addSubview(popup)
-        view.addSubview(bottomBanner)
+        if let bottomAd = bottomBannerAd {
+            view.addSubview(bottomAd)
+        }
     }
 
     func setupConstraints() {
@@ -285,12 +298,18 @@ private extension MainViewController {
 
                 calculateButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 calculateButton.topAnchor.constraint(greaterThanOrEqualTo: preferredPatternView.bottomAnchor, constant: 10),
-                calculateButton.bottomAnchor.constraint(equalTo: bottomBanner.topAnchor, constant: -20),
-
-                bottomBanner.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                bottomBanner.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                bottomBanner.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                bottomBanner.heightAnchor.constraint(equalToConstant: 50),
+                calculateButton.bottomAnchor.constraint(
+                    equalTo: bottomBannerAd != nil ? bottomBannerAd!.topAnchor : view.bottomAnchor,
+                    constant: bottomBannerAd != nil ? -20 : -60),
+            ]
+        )
+        guard let bottomAd = bottomBannerAd else { return }
+        NSLayoutConstraint.activate(
+            [
+                bottomAd.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                bottomAd.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                bottomAd.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                bottomAd.heightAnchor.constraint(equalToConstant: 50),
             ]
         )
     }
@@ -312,6 +331,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             guard let self = self else { return }
             self.removeRow(at: indexPath)
             self.clearButton.isHidden = self.viewModel.getSamplesCount() == 0
+            tableView.reloadData()
         }
 
         cell.genButtonTapped = { [weak self] tag in
@@ -335,83 +355,16 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-private extension MainViewController {
-    private func showAlert(alertType: AlertType) {
-        var alert: UIAlertController!
-
-        switch alertType {
-        case .foundEmptyGene:
-            alert = UIAlertController(title: "Found empty gene slot!",
-                                      message: "Please fill in all genes or remove whole line.",
-                                      preferredStyle: .alert)
-        case .noGenes:
-            alert = UIAlertController(title: "No crops!",
-                                      message: "Please add at least 1 crop to continue.",
-                                      preferredStyle: .alert)
-        case .preferredCombo:
-            alert = UIAlertController(title: "There are unallocated combination points!",
-                                      message: "Please indicate all 6 genes in the desired combination.",
-                                      preferredStyle: .alert)
-        case .addMoreCrops:
-            alert = UIAlertController(title: "Can't find any combos!",
-                                      message: "Please add more crops",
-                                      preferredStyle: .alert)
-        }
-
-        alert.view.tintColor = UIColor.black
-        alert.view.layer.cornerRadius = 15
-
-        alert.addAction(UIAlertAction(title: "Ok", style: .default))
-        self.present(alert, animated: true)
-    }
-
-    enum AlertType {
-        case foundEmptyGene
-        case noGenes
-        case preferredCombo
-        case addMoreCrops
-    }
-}
-
-// Banners
-extension MainViewController: GADFullScreenContentDelegate {
-    func loadRewardedAd() {
-        let request = GADRequest()
-        GADRewardedAd.load(withAdUnitID:"ca-app-pub-3940256099942544/1712485313",
-                           request: request,
-                           completionHandler: { [self] ad, error in
-            if let error = error {
-                print("Failed to load rewarded ad with error: \(error.localizedDescription)")
-                return
-            }
-            mainRewardedAd = ad
-            print("Rewarded ad loaded.")
-            mainRewardedAd?.fullScreenContentDelegate = self
-        }
-        )
-    }
-
-    func showAd() {
-        if let ad = mainRewardedAd {
-            ad.present(fromRootViewController: self, userDidEarnRewardHandler: {})
+extension MainViewController: ADS {
+    func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+        if let crop = viewModel.getTopCrop() {
+            present(ResultViewController(crop: crop), animated: true)
         } else {
-            if let crop = viewModel.getTopCrop() {
-                present(ResultViewController(crop: crop), animated: true)
-            } else {
-                showAlert(alertType: .addMoreCrops)
-            }
+            CustomAlert().showAlert(parent: self, alertType: .addMoreCrops)
+        }
+        ads?.loadRewardedAd(withAdUnitID: "ca-app-pub-3940256099942544/1712485313") { [weak self] ad in
+            guard let self = self, let ad = ad else { return }
+            self.mainRewardedAd = ad
         }
     }
-
-    /// Tells the delegate that the ad failed to present full screen content.
-      func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
-          print("Ad did fail to present full screen content.")
-      }
-
-      /// Tells the delegate that the ad dismissed full screen content.
-      func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
-          present(ResultViewController(crop: viewModel.findBest()!), animated: true)
-          loadRewardedAd()
-      }
-
 }

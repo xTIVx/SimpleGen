@@ -1,0 +1,63 @@
+{
+  "identifier" : "9588D6E9",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "B6DDB77C",
+      "localizations" : [
+        {
+          "description" : "Completely remove ADS",
+          "displayName" : "Remove ADS",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.tiv.c.ads",
+      "referenceName" : "removeADS",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "9B90101A",
+      "localizations" : [
+        {
+          "description" : "Unlock crops limit",
+          "displayName" : "Crops limit",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.tiv.c.crops",
+      "referenceName" : "Crops",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "816BF8B7",
+      "localizations" : [
+        {
+          "description" : "Unlock full version including ADS and Crops",
+          "displayName" : "Full version",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.tiv.c.full",
+      "referenceName" : "Full",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 2
+  }
+}
