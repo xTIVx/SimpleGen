@@ -8,23 +8,10 @@
 import Foundation
 import StoreKit
 
-class Purchases: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
-
-    static var purchaseStatus: Product {
-        get {
-            if let rawValue = UserDefaults.standard.string(forKey: "ProductStatus"),
-            let productStatus = Product(rawValue: rawValue) {
-                return productStatus
-            } else {
-                return .free
-            }
-        }
-        set {
-            UserDefaults.standard.set(newValue.rawValue, forKey: "ProductStatus")
-        }
-    }
+final class Purchases: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
 
     var delegate: UIViewController
+    var purchaseCompletion: (() -> ())?
 
     init(delegate: UIViewController) {
         self.delegate = delegate
@@ -60,14 +47,19 @@ class Purchases: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
 
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         transactions.forEach { transaction in
-
+            print(transaction.payment.productIdentifier)
             switch transaction.transactionState {
             case .purchasing:
                 print("Purchasing")
             case .purchased:
                 SKPaymentQueue.default().finishTransaction(transaction)
-                print("Purchased")
-                UserDefaults.standard.set(transaction.payment.productIdentifier, forKey: "ProductStatus")
+                if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+                   let product = Product(rawValue: transaction.payment.productIdentifier) {
+                    UserDefaults.standard.set(transaction.payment.productIdentifier, forKey: "ProductStatus")
+                    appDelegate.purchaseStatus = product
+                    print("Purchased")
+                    purchaseCompletion?()
+                }
             case .failed:
                 SKPaymentQueue.default().finishTransaction(transaction)
                 print("Failed")

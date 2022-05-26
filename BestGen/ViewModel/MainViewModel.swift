@@ -10,6 +10,7 @@ import Foundation
 class MainViewModel {
 
     // MARK: Properties
+
     private var crops = [
         Crop(letters: [
             .init(key: .G, comparedGens: nil),

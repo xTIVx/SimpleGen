@@ -5,14 +5,18 @@
 //  Created by Igor Chernobai on 5/7/22.
 //
 
+import Combine
 import GoogleMobileAds
 import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    @Published var purchaseStatus: Product = .free
+    let defaults = UserDefaults.standard
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+
         GADMobileAds.sharedInstance().start(completionHandler: nil)
         
         return true

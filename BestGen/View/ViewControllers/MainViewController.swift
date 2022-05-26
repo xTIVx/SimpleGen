@@ -5,14 +5,16 @@
 //  Created by Igor Chernobai on 5/7/22.
 //
 
-import UIKit
+import Combine
 import Foundation
 import GoogleMobileAds
+import UIKit
 
 class MainViewController: UIViewController {
 
     private let viewModel: MainViewModel = MainViewModel()
     private var ads: Ads?
+    private var cancellable: Set<AnyCancellable> = []
 
     private var mainRewardedAd: GADRewardedAd?
     private var bottomBannerAd: GADBannerView?
@@ -20,11 +22,13 @@ class MainViewController: UIViewController {
     private let removeAds: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let attributedString = NSAttributedString(string: "Remove ADS", attributes:
-                                                    [
-                                                        NSAttributedString.Key.font: Constants.Fonts.subTitle ?? UIFont(),
-                                                        NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
-                                                    ]
+        let attributedString = NSAttributedString(
+            string: "Remove ADS",
+            attributes:
+                [
+                    NSAttributedString.Key.font: Constants.Fonts.subTitle ?? UIFont(),
+                    NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
+                ]
         )
         button.setAttributedTitle(attributedString, for: .normal)
         button.setTitleColor(Constants.Colors.mainGreen, for: .normal)
@@ -91,11 +95,13 @@ class MainViewController: UIViewController {
     private let clearButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let attributedString = NSAttributedString(string: "Clear", attributes:
-                                                    [
-                                                        NSAttributedString.Key.foregroundColor: Constants.Colors.mainRed,
-                                                        NSAttributedString.Key.font: Constants.Fonts.subTitle ?? UIFont(),
-                                                    ]
+        let attributedString = NSAttributedString(
+            string: "Clear",
+            attributes:
+                [
+                    NSAttributedString.Key.foregroundColor: Constants.Colors.mainRed,
+                    NSAttributedString.Key.font: Constants.Fonts.subTitle ?? UIFont(),
+                ]
         )
         button.setAttributedTitle(attributedString, for: .normal)
         button.tintColor = Constants.Colors.mainWhite
@@ -134,12 +140,14 @@ class MainViewController: UIViewController {
     private let calculateButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let attributedString = NSAttributedString(string: "Calculate", attributes:
-                                                    [
-                                                        NSAttributedString.Key.foregroundColor: UIColor.white,
-                                                        NSAttributedString.Key.font: Constants.Fonts.subTitle?.withSize(25) ?? UIFont(),
+        let attributedString = NSAttributedString(
+            string: "Calculate",
+            attributes:
+                [
+                    NSAttributedString.Key.foregroundColor: UIColor.white,
+                    NSAttributedString.Key.font: Constants.Fonts.subTitle?.withSize(25) ?? UIFont(),
 
-                                                    ]
+                ]
         )
         button.setAttributedTitle(attributedString, for: .normal)
         var config = UIButton.Configuration.gray()
@@ -154,12 +162,7 @@ class MainViewController: UIViewController {
 
     init() {
         super.init(nibName: nil, bundle: nil)
-        if Purchases.purchaseStatus == .free || Purchases.purchaseStatus == .crops {
-
-            ads = Ads(delegate: self)
-            mainRewardedAd = ads?.createRewardedAd()
-            bottomBannerAd = ads?.createSmallBanner(adUnitID: "ca-app-pub-3940256099942544/2934735716") //Constants.AdIdentifiers.bottomAd
-        }
+        setupBindings()
     }
 
     required init?(coder: NSCoder) {
@@ -183,14 +186,43 @@ class MainViewController: UIViewController {
         }
     }
 
+    func setupBindings() {
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        if let rawValue = UserDefaults.standard.string(forKey: "ProductStatus"),
+           let productStatus = Product(rawValue: rawValue) {
+            appDelegate.purchaseStatus = productStatus
+        }
+
+        appDelegate.$purchaseStatus.sink { [weak self] product in
+            guard let self = self else { return }
+            if product == .free || product == .crops {
+                self.ads = Ads(delegate: self)
+                self.mainRewardedAd = self.ads?.createRewardedAd()
+                self.bottomBannerAd = self.ads?.createSmallBanner(adUnitID: "ca-app-pub-3940256099942544/2934735716")
+                //Constants.AdIdentifiers.bottomAd
+            }
+            else {
+                if self.mainRewardedAd != nil { self.mainRewardedAd = nil }
+                if self.bottomBannerAd != nil { self.bottomBannerAd?.isHidden = true }
+                if self.ads != nil { self.ads = nil }
+
+            }
+        }.store(in: &cancellable)
+
+        
+    }
+
     @objc private func buttonTapped(_ sender: UIButton) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         switch sender.tag {
         case 99:
             viewModel.removeAllCrops()
             clearButton.isHidden = true
             listOfCropsTableView.reloadData()
         case 100:
-            if Purchases.purchaseStatus == .crops || Purchases.purchaseStatus == .full {
+
+            if appDelegate.purchaseStatus == .crops || appDelegate.purchaseStatus == .full {
                 viewModel.addCropRow()
                 clearButton.isHidden = false
                 listOfCropsTableView.reloadData()
@@ -212,7 +244,7 @@ class MainViewController: UIViewController {
             } else if viewModel.getPreferredCombo().values.reduce(0, { $0 + $1 }) != 6 {
                 alert.showAlert(parent: self, alertType: .preferredCombo)
             } else if viewModel.isAllLettersAreSet() {
-                if Purchases.purchaseStatus == .free || Purchases.purchaseStatus == .crops {
+                if appDelegate.purchaseStatus == .free || appDelegate.purchaseStatus == .crops {
                     if let rewardedAd = self.mainRewardedAd {
                         ads?.showRewardedAd(rewardedAd: rewardedAd)
                     }
@@ -266,6 +298,7 @@ private extension MainViewController {
         listView.addSubview(addButton)
         listView.addSubview(listOfCropsTableView)
         view.addSubview(popup)
+
         if let bottomAd = bottomBannerAd {
             view.addSubview(bottomAd)
         }
