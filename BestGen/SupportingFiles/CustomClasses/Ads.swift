@@ -31,10 +31,7 @@ class Ads: NSObject, ADS {
     }
 
     func createRewardedAd() -> GADRewardedAd {
-        let ad = GADRewardedAd()
-        ad.fullScreenContentDelegate = self
-
-        return ad
+        GADRewardedAd()
     }
     
     func loadRewardedAd(withAdUnitID: String, completion: @escaping ((GADRewardedAd?) -> ()))  {

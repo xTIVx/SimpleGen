@@ -178,6 +178,7 @@ class MainViewController: UIViewController {
             ads.loadRewardedAd(withAdUnitID: "ca-app-pub-3940256099942544/1712485313") { [weak self] ad in
                 guard let self = self, let ad = ad else { return }
                 self.mainRewardedAd = ad
+                self.mainRewardedAd!.fullScreenContentDelegate = self
             }
         }
     }
@@ -385,6 +386,7 @@ extension MainViewController: ADS {
         ads?.loadRewardedAd(withAdUnitID: "ca-app-pub-3940256099942544/1712485313") { [weak self] ad in
             guard let self = self, let ad = ad else { return }
             self.mainRewardedAd = ad
+            self.mainRewardedAd!.fullScreenContentDelegate = self
         }
     }
 }
