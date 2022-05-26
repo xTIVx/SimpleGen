@@ -23,6 +23,11 @@ enum Constants {
         static let letterTitle = UIFont(name: "Arial-BoldMT", size: 24)
     }
 
+    enum AdIdentifiers {
+        static let rewardedAd = "ca-app-pub-3723771389568265/8048988554"
+        static let bottomAd = "ca-app-pub-3723771389568265/4301315231"
+    }
+
 }
 
 enum Product: String, CaseIterable {

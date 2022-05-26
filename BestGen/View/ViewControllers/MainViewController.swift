@@ -158,7 +158,7 @@ class MainViewController: UIViewController {
 
             ads = Ads(delegate: self)
             mainRewardedAd = ads?.createRewardedAd()
-            bottomBannerAd = ads?.createSmallBanner(adUnitID: "ca-app-pub-3940256099942544/2934735716")
+            bottomBannerAd = ads?.createSmallBanner(adUnitID: "ca-app-pub-3940256099942544/2934735716") //Constants.AdIdentifiers.bottomAd
         }
     }
 
@@ -382,7 +382,7 @@ extension MainViewController: ADS {
             present(ResultViewController(crop: crop), animated: true)
         } else {
             CustomAlert().showAlert(parent: self, alertType: .addMoreCrops)
-        }
+        }                              // Constants.AdIdentifiers.rewardedAd
         ads?.loadRewardedAd(withAdUnitID: "ca-app-pub-3940256099942544/1712485313") { [weak self] ad in
             guard let self = self, let ad = ad else { return }
             self.mainRewardedAd = ad
