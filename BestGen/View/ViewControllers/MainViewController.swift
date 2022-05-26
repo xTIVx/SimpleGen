@@ -189,9 +189,19 @@ class MainViewController: UIViewController {
             clearButton.isHidden = true
             listOfCropsTableView.reloadData()
         case 100:
-            viewModel.addCropRow()
-            clearButton.isHidden = false
-            listOfCropsTableView.reloadData()
+            if Purchases.purchaseStatus == .crops || Purchases.purchaseStatus == .full {
+                viewModel.addCropRow()
+                clearButton.isHidden = false
+                listOfCropsTableView.reloadData()
+            } else {
+                if viewModel.getSamplesCount() >= 5 {
+                    CustomAlert().showAlert(parent: self, alertType: .noCropsPayment)
+                } else {
+                    viewModel.addCropRow()
+                    clearButton.isHidden = false
+                    listOfCropsTableView.reloadData()
+                }
+            }
         case 101:
             let alert = CustomAlert()
             if viewModel.getSamplesCount() == 0 {

@@ -33,7 +33,12 @@ class CustomAlert {
             alert = UIAlertController(title: "Failed to make a payment!",
                                       message: "Sorry, but you are not allow to make a payment",
                                       preferredStyle: .alert)
+        case .noCropsPayment:
+            alert = UIAlertController(title: "Maximum crops achived!",
+                                      message: "Sorry, in the free version you can use only 5 crops, plz support developer and buy \"Crops\" or \"Full\" package",
+                                      preferredStyle: .alert)
         }
+        
 
         alert.view.tintColor = UIColor.black
         alert.view.layer.cornerRadius = 15
@@ -48,5 +53,6 @@ class CustomAlert {
         case preferredCombo
         case addMoreCrops
         case cantPay
+        case noCropsPayment
     }
 }
