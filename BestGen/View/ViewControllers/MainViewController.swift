@@ -199,8 +199,16 @@ class MainViewController: UIViewController {
             } else if viewModel.getPreferredCombo().values.reduce(0, { $0 + $1 }) != 6 {
                 alert.showAlert(parent: self, alertType: .preferredCombo)
             } else if viewModel.isAllLettersAreSet() {
-                if let rewardedAd = self.mainRewardedAd {
-                    ads?.showRewardedAd(rewardedAd: rewardedAd)
+                if Purchases.purchaseStatus == .free || Purchases.purchaseStatus == .crops {
+                    if let rewardedAd = self.mainRewardedAd {
+                        ads?.showRewardedAd(rewardedAd: rewardedAd)
+                    }
+                } else {
+                    if let crop = viewModel.getTopCrop() {
+                        present(ResultViewController(crop: crop), animated: true)
+                    } else {
+                        CustomAlert().showAlert(parent: self, alertType: .addMoreCrops)
+                    }
                 }
             } else {
                 alert.showAlert(parent: self, alertType: .foundEmptyGene)

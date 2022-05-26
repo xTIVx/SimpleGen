@@ -59,7 +59,12 @@ class MainViewModel {
     // MARK: CRUD funcs
 
     func getTopCrop() -> Crop? {
-        self.topCrop
+        if let top = self.topCrop {
+            return top
+        } else {
+            self.topCrop = findBest()
+            return self.topCrop
+        }
     }
 
     func updatePreferredCombo(combo: [LetterKey: Int]) {
