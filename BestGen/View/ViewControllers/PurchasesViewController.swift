@@ -60,7 +60,7 @@ class PurchasesViewController: UIViewController {
     }()
 
     private let cropsLimitView: PurchaseView = {
-        let view = PurchaseView(productTitle: "Unlock Crops Cimit", price: 2.99)
+        let view = PurchaseView(productTitle: "Unlock Crops Limit", price: 2.99)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .clear
         view.buttonTappedCompletion = {}
@@ -69,7 +69,7 @@ class PurchasesViewController: UIViewController {
     }()
 
     private let fullVersionView: PurchaseView = {
-        let view = PurchaseView(productTitle: "ADS + Crops limit", price: 4.99)
+        let view = PurchaseView(productTitle: "Full (ADS + Crops limit)", price: 4.99)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .clear
         view.buttonTappedCompletion = {}
@@ -156,3 +156,4 @@ extension PurchasesViewController {
         )
     }
 }
+

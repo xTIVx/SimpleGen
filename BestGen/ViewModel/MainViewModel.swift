@@ -5,7 +5,9 @@
 //  Created by Igor Chernobai on 5/11/22.
 //
 
+import Combine
 import Foundation
+import UIKit
 
 class MainViewModel {
 
@@ -45,6 +47,7 @@ class MainViewModel {
             .init(key: .H, comparedGens: nil)
         ]),
     ]
+
     private var preferredCombo: [LetterKey: Int] = [.G: 4, .Y: 2, .H: 0]
 
     private var topCrop: Crop?
@@ -80,10 +83,6 @@ class MainViewModel {
         preferredCombo.filter { $0.value != 0 }
     }
 
-    func getAllCrops() -> [Crop] {
-        crops
-    }
-
     func addCropRow() {
         crops.insert(Crop(letters:[Letter(),Letter(),Letter(),Letter(),Letter(),Letter()]), at: 0)
     }
@@ -104,9 +103,19 @@ class MainViewModel {
         crops[row]
     }
 
-    func updateCrop(crop: Int, letter: Int, newKey: LetterKey, completion: (()->())) {
-        crops[crop].letters[letter].key = newKey
-        completion()
+    func updateCrop(cropIndex: Int, letterIndex: Int, newKey: LetterKey, completion: ((Bool)->())) {
+        crops[cropIndex].letters[letterIndex].key = newKey
+//        if !crops[cropIndex].letters.contains(where: { $0.key == .empty }) {
+            let actualCropLetters = crops[cropIndex].letters
+            let crops = crops.filter { crop in
+                let comparedCount = zip(crop.letters, actualCropLetters)
+                    .filter { $0.0.key == $0.1.key}
+                    .map{ $0.0 }
+
+                return comparedCount.count == 6
+            }
+            crops.count > 1 ? completion(false) : completion(true)
+//        }
     }
 
     // MARK: Crossbreed funcs
@@ -183,5 +192,27 @@ class MainViewModel {
         }
 
         return sortedIndex.map { crops[$0.key] }.max { $0.betterScore < $1.betterScore }
+    }
+
+    func getGenesFromPhoto(photo: UIImage) {
+        recognizeGenes(photo: photo)
+    }
+
+    func recognizeGenes(photo: UIImage) {
+        let recognizer = TextRecognizer()
+        recognizer.textRecognize(image: photo) { [ weak self ] textArray in
+            textArray.forEach { possibleLetters in
+                guard let crop = self?.parseGenes(possibleGenes: possibleLetters),
+                crop.letters.count == 6 else {return}
+            }
+        }
+    }
+
+    func parseGenes(possibleGenes: String) -> Crop? {
+        let result = possibleGenes.compactMap { char -> Letter? in
+            guard let letterKey = LetterKey(rawValue: "\(char)") else { return nil}
+            return Letter(key: letterKey)
+        }
+        return Crop(letters: result)
     }
 }

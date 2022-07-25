@@ -38,3 +38,9 @@ extension UIView {
         blinkTintColor()
     }
 }
+
+extension UIViewController {
+    class func setUIInterfaceOrientation(_ value: UIInterfaceOrientation) {
+        UIDevice.current.setValue(value.rawValue, forKey: "orientation")
+    }
+}

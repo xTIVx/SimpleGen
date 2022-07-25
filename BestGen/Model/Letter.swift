@@ -7,46 +7,22 @@
 
 import Foundation
 
-struct Crop {
-    var letters: [Letter]
-    var parents: [Crop]?
-    var betterScore: Int {
-        var score = 0
-        letters.forEach { letter in
-            switch letter.key {
-            case .Y:
-                score += 1
-            case .G:
-                score += 1
-            case .H:
-                score += 1
-            case .W:
-                score -= 1
-            case .X:
-                score -= 1
-            default:
-                break
-            }
-        }
-        return score
-    }
-}
-
 struct Letter {
     var key: LetterKey = .empty
     var comparedGens: [LetterKey]?
-    var weight: Float {
+    var parents: [[Letter]]?
+    var v: Float {
         switch key {
         case .Y:
-            return 0.6
+            return 1
         case .G:
-            return 0.6
+            return 1
         case .H:
-            return 0.6
+            return 1
         case .W:
-            return 1.0
+            return 1.5
         case .X:
-            return 1.0
+            return 1.5
         default:
             return 0
         }

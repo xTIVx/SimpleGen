@@ -13,7 +13,6 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @Published var purchaseStatus: Product = .free
-    let defaults = UserDefaults.standard
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 

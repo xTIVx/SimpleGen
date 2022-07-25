@@ -94,7 +94,6 @@ class ResultViewController: UIViewController {
     init(crop: Crop) {
         super.init(nibName: nil, bundle: nil)
         self.viewModel = ResultViewModel(crop: crop)
-
     }
 
     required init?(coder: NSCoder) {

@@ -62,7 +62,7 @@ class MainViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isUserInteractionEnabled = true
         view.layer.borderColor = Constants.Colors.mainGrey.cgColor
-        view.layer.borderWidth = 3
+        view.layer.borderWidth = 2
         view.layer.cornerRadius = 10
 
         let separator = UIView(frame: CGRect(x: 0, y: 20, width: view.bounds.size.width / 2, height: 1))
@@ -92,6 +92,19 @@ class MainViewController: UIViewController {
         return button
     }()
 
+    private let photoButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        let largeConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .regular, scale: .large)
+        let largeBoldDoc = UIImage(systemName: "camera", withConfiguration: largeConfig)
+        button.setImage(largeBoldDoc, for: .normal)
+        button.tintColor = Constants.Colors.mainWhite
+        button.blinkTintColor()
+        button.tag = 115
+
+        return button
+    }()
+
     private let clearButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -105,7 +118,6 @@ class MainViewController: UIViewController {
         )
         button.setAttributedTitle(attributedString, for: .normal)
         button.tintColor = Constants.Colors.mainWhite
-        button.isHidden = true
         button.tag = 99
 
         return button
@@ -145,8 +157,7 @@ class MainViewController: UIViewController {
             attributes:
                 [
                     NSAttributedString.Key.foregroundColor: UIColor.white,
-                    NSAttributedString.Key.font: Constants.Fonts.subTitle?.withSize(25) ?? UIFont(),
-
+                    NSAttributedString.Key.font: Constants.Fonts.subTitle?.withSize(20) ?? UIFont(),
                 ]
         )
         button.setAttributedTitle(attributedString, for: .normal)
@@ -209,8 +220,6 @@ class MainViewController: UIViewController {
 
             }
         }.store(in: &cancellable)
-
-        
     }
 
     @objc private func buttonTapped(_ sender: UIButton) {
@@ -221,7 +230,6 @@ class MainViewController: UIViewController {
             clearButton.isHidden = true
             listOfCropsTableView.reloadData()
         case 100:
-
             if appDelegate.purchaseStatus == .crops || appDelegate.purchaseStatus == .full {
                 viewModel.addCropRow()
                 clearButton.isHidden = false
@@ -258,8 +266,15 @@ class MainViewController: UIViewController {
             } else {
                 alert.showAlert(parent: self, alertType: .foundEmptyGene)
             }
+        case 115:
+            let pickerController = UIImagePickerController()
+            pickerController.sourceType = .camera
+            pickerController.delegate = self
+            pickerController.allowsEditing = true
+            present(pickerController, animated: true)
         case 200:
             present(PurchasesViewController(), animated: true)
+        
         default:
             break
         }
@@ -277,8 +292,10 @@ class MainViewController: UIViewController {
 private extension MainViewController {
 
     func setupView() {
+        clearButton.isHidden = viewModel.getSamplesCount() == 0
         view.backgroundColor = Constants.Colors.background
         addButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        photoButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         clearButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         calculateButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         removeAds.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
@@ -295,6 +312,7 @@ private extension MainViewController {
         view.addSubview(calculateButton)
         listView.addSubview(separator)
         listView.addSubview(clearButton)
+        listView.addSubview(photoButton)
         listView.addSubview(addButton)
         listView.addSubview(listOfCropsTableView)
         view.addSubview(popup)
@@ -312,10 +330,10 @@ private extension MainViewController {
                 popup.trailingAnchor.constraint(equalTo: view.trailingAnchor),
                 popup.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-                removeAds.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                removeAds.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+                removeAds.bottomAnchor.constraint(equalTo: listView.topAnchor),
+                removeAds.trailingAnchor.constraint(equalTo: listView.trailingAnchor),
 
-                firstActionLabel.topAnchor.constraint(equalTo: removeAds.bottomAnchor, constant: 10),
+                firstActionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
                 firstActionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
 
                 listView.topAnchor.constraint(equalTo: firstActionLabel.bottomAnchor, constant: 5),
@@ -330,20 +348,26 @@ private extension MainViewController {
 
                 clearButton.leadingAnchor.constraint(equalTo: listView.leadingAnchor, constant: 15),
                 clearButton.topAnchor.constraint(equalTo: listView.topAnchor, constant: 5),
-                clearButton.widthAnchor.constraint(equalToConstant: 50),
-                clearButton.heightAnchor.constraint(equalToConstant: 50),
 
                 addButton.topAnchor.constraint(equalTo: listView.topAnchor, constant: 5),
                 addButton.trailingAnchor.constraint(equalTo: listView.trailingAnchor, constant: -5),
-                addButton.widthAnchor.constraint(equalToConstant: 50),
-                addButton.heightAnchor.constraint(equalToConstant: 50),
+                addButton.widthAnchor.constraint(equalToConstant: Constants.ScreenSizeConfig.isSmallDevice ? 30 : 50),
+                addButton.heightAnchor.constraint(equalToConstant: Constants.ScreenSizeConfig.isSmallDevice ? 30 : 50),
+
+                photoButton.topAnchor.constraint(equalTo: listView.topAnchor, constant: 5),
+                photoButton.trailingAnchor.constraint(equalTo: addButton.leadingAnchor, constant: Constants.ScreenSizeConfig.isSmallDevice ? -10 : 0),
+                photoButton.widthAnchor.constraint(equalToConstant: Constants.ScreenSizeConfig.isSmallDevice ? 35 : 50),
+                photoButton.heightAnchor.constraint(equalToConstant: Constants.ScreenSizeConfig.isSmallDevice ? 30 : 50),
 
                 listOfCropsTableView.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 5),
                 listOfCropsTableView.leadingAnchor.constraint(equalTo: listView.leadingAnchor, constant: 5),
                 listOfCropsTableView.trailingAnchor.constraint(equalTo: listView.trailingAnchor, constant: -5),
                 listOfCropsTableView.bottomAnchor.constraint(equalTo: listView.bottomAnchor, constant: -15),
 
-                secondActionLabel.topAnchor.constraint(equalTo: listView.bottomAnchor, constant: 20),
+                secondActionLabel.topAnchor.constraint(
+                    equalTo: listView.bottomAnchor,
+                    constant: Constants.ScreenSizeConfig.isSmallDevice ? 10 : 30
+                ),
                 secondActionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
 
                 preferredPatternView.topAnchor.constraint(equalTo: secondActionLabel.bottomAnchor, constant: 5),
@@ -377,7 +401,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: GenesTableViewCell.identifier, for: indexPath) as? GenesTableViewCell else { return UITableViewCell() }
 
-        cell.resetSell()
+        cell.resetCell()
 
         cell.setupCell(crop: self.viewModel.getCrop(at: indexPath.row))
 
@@ -392,7 +416,10 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             guard let self = self else { return }
             self.popup.moveIn()
             self.popup.genChoosed = { letter in
-                self.viewModel.updateCrop(crop: indexPath.row, letter: tag, newKey: letter) {
+                self.viewModel.updateCrop(cropIndex: indexPath.row, letterIndex: tag, newKey: letter) { isSuccess in
+                    if !isSuccess {
+                        CustomAlert().showAlert(parent: self, alertType: .foundDuplicate)
+                    }
                     tableView.beginUpdates()
                     tableView.reloadRows(at: [indexPath], with: .automatic)
                     tableView.endUpdates()
@@ -421,5 +448,17 @@ extension MainViewController: ADS {
             self.mainRewardedAd = ad
             self.mainRewardedAd!.fullScreenContentDelegate = self
         }
+    }
+}
+
+extension MainViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
+        guard let image = info[.editedImage] as? UIImage else { return }
+        viewModel.getGenesFromPhoto(photo: image)
     }
 }

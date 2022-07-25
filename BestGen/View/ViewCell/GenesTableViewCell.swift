@@ -176,7 +176,7 @@ class GenesTableViewCell: UITableViewCell {
         }
     }
 
-    func resetSell() {
+    func resetCell() {
         firstButton.setTitle(nil, for: .normal)
         secondButton.setTitle(nil, for: .normal)
         thirdButton.setTitle(nil, for: .normal)

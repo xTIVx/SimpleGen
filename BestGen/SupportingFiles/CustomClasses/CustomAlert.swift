@@ -37,6 +37,10 @@ class CustomAlert {
             alert = UIAlertController(title: "Maximum crops achived!",
                                       message: "Sorry, in free version you can use only 5 crops, please buy \"Crops\" or \"Full\" package",
                                       preferredStyle: .alert)
+        case .foundDuplicate:
+            alert = UIAlertController(title: "Already added!",
+                                      message: "You already added this crop before.",
+                                      preferredStyle: .alert)
         }
         
 
@@ -58,5 +62,6 @@ class CustomAlert {
         case addMoreCrops
         case cantPay
         case noCropsPayment
+        case foundDuplicate
     }
 }

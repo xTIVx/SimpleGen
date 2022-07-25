@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+let isSmallDevice = {
+    return
+}()
+
 enum Constants {
 
     enum Colors {
@@ -19,8 +23,8 @@ enum Constants {
     }
 
     enum Fonts {
-        static let subTitle = UIFont(name: "Arial-BoldMT", size: 18)
-        static let letterTitle = UIFont(name: "Arial-BoldMT", size: 24)
+        static let subTitle = UIFont(name: "Arial-BoldMT", size: ScreenSizeConfig.isSmallDevice ? 14 : 18)
+        static let letterTitle = UIFont(name: "Arial-BoldMT", size: ScreenSizeConfig.isSmallDevice ? 19 : 24)
     }
 
     enum AdIdentifiers {
@@ -28,6 +32,9 @@ enum Constants {
         static let bottomAd = "ca-app-pub-3723771389568265/4301315231"
     }
 
+    enum ScreenSizeConfig {
+        static let isSmallDevice = UIScreen.main.bounds.height < 812
+    }
 }
 
 enum Product: String, CaseIterable {

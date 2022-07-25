@@ -12,7 +12,7 @@ class CircledGenLetterView: UIView {
     private let letterLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = Constants.Fonts.letterTitle?.withSize(30)
+        label.font = Constants.Fonts.letterTitle?.withSize(25)
         label.textColor = Constants.Colors.mainWhite
 
         return label

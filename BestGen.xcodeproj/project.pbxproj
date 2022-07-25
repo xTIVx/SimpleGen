@@ -10,6 +10,7 @@
 		4610D3BF283EB032006D689E /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4610D3BE283EB032006D689E /* CustomAlert.swift */; };
 		4610D3C2283EBE82006D689E /* Purchases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4610D3C1283EBE82006D689E /* Purchases.swift */; };
 		4610D3C4283EC7F6006D689E /* Ads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4610D3C3283EC7F6006D689E /* Ads.swift */; };
+		4610D3CA285803AB006D689E /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4610D3C9285803AB006D689E /* TextRecognizer.swift */; };
 		464826002831B86F00E56ED4 /* UIView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464825FF2831B86F00E56ED4 /* UIView+Utils.swift */; };
 		464826022831E12600E56ED4 /* PreferredLetterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464826012831E12600E56ED4 /* PreferredLetterButton.swift */; };
 		464826042832EEF400E56ED4 /* ResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464826032832EEF400E56ED4 /* ResultViewController.swift */; };
@@ -26,7 +27,7 @@
 		46A94F4A282741A00014F6BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 46A94F49282741A00014F6BE /* Assets.xcassets */; };
 		46A94F4D282741A00014F6BE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 46A94F4B282741A00014F6BE /* LaunchScreen.storyboard */; };
 		46A94F5A282C2EA60014F6BE /* Array+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F59282C2EA60014F6BE /* Array+Utils.swift */; };
-		46A94F5C282C2EE00014F6BE /* Letter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F5B282C2EE00014F6BE /* Letter.swift */; };
+		46A94F5C282C2EE00014F6BE /* Crop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F5B282C2EE00014F6BE /* Crop.swift */; };
 		46A94F5E282C2F3D0014F6BE /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F5D282C2F3D0014F6BE /* MainViewModel.swift */; };
 		46A94F61282C3EEC0014F6BE /* GenesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F60282C3EEC0014F6BE /* GenesTableViewCell.swift */; };
 		46A94F67282CA6150014F6BE /* UIButton+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A94F66282CA6150014F6BE /* UIButton+Utils.swift */; };
@@ -41,6 +42,7 @@
 		4610D3BE283EB032006D689E /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
 		4610D3C1283EBE82006D689E /* Purchases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Purchases.swift; sourceTree = "<group>"; };
 		4610D3C3283EC7F6006D689E /* Ads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ads.swift; sourceTree = "<group>"; };
+		4610D3C9285803AB006D689E /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		464825FF2831B86F00E56ED4 /* UIView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Utils.swift"; sourceTree = "<group>"; };
 		464826012831E12600E56ED4 /* PreferredLetterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferredLetterButton.swift; sourceTree = "<group>"; };
 		464826032832EEF400E56ED4 /* ResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultViewController.swift; sourceTree = "<group>"; };
@@ -60,7 +62,7 @@
 		46A94F4C282741A00014F6BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		46A94F4E282741A00014F6BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		46A94F59282C2EA60014F6BE /* Array+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Utils.swift"; sourceTree = "<group>"; };
-		46A94F5B282C2EE00014F6BE /* Letter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Letter.swift; sourceTree = "<group>"; };
+		46A94F5B282C2EE00014F6BE /* Crop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crop.swift; sourceTree = "<group>"; };
 		46A94F5D282C2F3D0014F6BE /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		46A94F60282C3EEC0014F6BE /* GenesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenesTableViewCell.swift; sourceTree = "<group>"; };
 		46A94F66282CA6150014F6BE /* UIButton+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Utils.swift"; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				4610D3BE283EB032006D689E /* CustomAlert.swift */,
 				4610D3C1283EBE82006D689E /* Purchases.swift */,
 				4610D3C3283EC7F6006D689E /* Ads.swift */,
+				4610D3C9285803AB006D689E /* TextRecognizer.swift */,
 			);
 			path = CustomClasses;
 			sourceTree = "<group>";
@@ -146,7 +149,7 @@
 		46A94F54282C2DFF0014F6BE /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				46A94F5B282C2EE00014F6BE /* Letter.swift */,
+				46A94F5B282C2EE00014F6BE /* Crop.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -365,11 +368,12 @@
 			files = (
 				4648261E283DF00800E56ED4 /* PurchaseView.swift in Sources */,
 				46482610283B398B00E56ED4 /* CircledDoubleGenView.swift in Sources */,
+				4610D3CA285803AB006D689E /* TextRecognizer.swift in Sources */,
 				46A94F6E282D686F0014F6BE /* ChooseGenPopup.swift in Sources */,
 				46A94F5A282C2EA60014F6BE /* Array+Utils.swift in Sources */,
 				46B3A94E283073A800DBB0AA /* PreferredPatternView.swift in Sources */,
 				46A94F452827419C0014F6BE /* MainViewController.swift in Sources */,
-				46A94F5C282C2EE00014F6BE /* Letter.swift in Sources */,
+				46A94F5C282C2EE00014F6BE /* Crop.swift in Sources */,
 				464826042832EEF400E56ED4 /* ResultViewController.swift in Sources */,
 				46A94F61282C3EEC0014F6BE /* GenesTableViewCell.swift in Sources */,
 				46A94F412827419C0014F6BE /* AppDelegate.swift in Sources */,
@@ -529,6 +533,7 @@
 				DEVELOPMENT_TEAM = 3F2Q7FQ47R;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BestGen/SupportingFiles/System/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Use camera to scan genes from your screen.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarHidden = NO;
@@ -559,6 +564,7 @@
 				DEVELOPMENT_TEAM = 3F2Q7FQ47R;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BestGen/SupportingFiles/System/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Use camera to scan genes from your screen.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarHidden = NO;

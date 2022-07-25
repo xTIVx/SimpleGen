@@ -24,7 +24,7 @@ class PreferredLetterButton: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = Constants.Colors.mainWhite
-        label.font = Constants.Fonts.subTitle?.withSize(25)
+        label.font = Constants.Fonts.subTitle?.withSize(20)
 
         return label
     }()
