@@ -41,6 +41,7 @@ class Ads: NSObject, ADS {
                            completionHandler: { ad, error in
             if let error = error {
                 print("Failed to load rewarded ad with error: \(error.localizedDescription)")
+                completion(nil)
                 return
             }
             completion(ad)
