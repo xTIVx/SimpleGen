@@ -6,14 +6,26 @@
 //
 
 import UIKit
+import Combine
 
 class PurchasesViewController: UIViewController {
 
     private var store: Purchases?
+    private var cancellable: Set<AnyCancellable> = []
+
 
     init() {
         super.init(nibName: nil, bundle: nil)
         self.store = Purchases(delegate: self)
+
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            appDelegate.$purchaseStatus
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { [weak self] newStatus in
+                    self?.currentStatusLabel.text = "Current status: \(Product(rawValue: newStatus.rawValue)!)"
+                })
+                .store(in: &cancellable)
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -27,6 +39,7 @@ class PurchasesViewController: UIViewController {
         button.setImage(UIImage(systemName: "xmark",withConfiguration: config), for: .normal)
         button.tintColor = Constants.Colors.mainRed
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.tag = 17
 
         return button
     }()
@@ -43,8 +56,8 @@ class PurchasesViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = Constants.Colors.mainWhite
-        label.text = "Welcome Message"
-        label.font = Constants.Fonts.letterTitle
+        label.text = "We appreciate your support!"
+        label.font = Constants.Fonts.letterTitle?.withSize(23)
         label.numberOfLines = 0
 
         return label
@@ -77,6 +90,39 @@ class PurchasesViewController: UIViewController {
         return view
     }()
 
+    private let currentStatusLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = Constants.Colors.mainWhite
+        label.font = Constants.Fonts.letterTitle?.withSize(20)
+        label.numberOfLines = 0
+
+        return label
+    }()
+
+    private let restorePaymentButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        var config = UIButton.Configuration.gray()
+        config.baseBackgroundColor = Constants.Colors.mainGreen
+        config.buttonSize = .medium
+        button.configuration = config
+        let attributedString = NSAttributedString(string: "Restore payment", attributes:
+                                                    [
+                                                        NSAttributedString.Key.foregroundColor: UIColor.white,
+                                                        NSAttributedString.Key.font: Constants.Fonts.subTitle?.withSize(15) ?? UIFont(),
+
+                                                    ]
+        )
+        button.setAttributedTitle(attributedString, for: .normal)
+        button.tag = 18
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+
+        return button
+    }()
+
+    
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,8 +132,14 @@ class PurchasesViewController: UIViewController {
         setupPurchases()
     }
 
-    @objc func buttonTapped() {
-        dismiss(animated: true)
+    @objc func buttonTapped(sender: UIButton) {
+        if sender.tag == 17 {
+            dismiss(animated: true)
+        } else if sender.tag == 18 {
+            if let store = self.store {
+                store.restorePayment()
+            }
+        }
     }
 }
 
@@ -95,17 +147,17 @@ extension PurchasesViewController {
     func setupPurchases() {
         cropsLimitView.buttonTappedCompletion? = {
             if let store = self.store  {
-                store.startPayment(product: .crops)
+                store.startPayment(product: .Crops)
             }
         }
         removeAdsView.buttonTappedCompletion? = {
             if let store = self.store  {
-                store.startPayment(product: .ads)
+                store.startPayment(product: .Ads)
             }
         }
         fullVersionView.buttonTappedCompletion? = {
             if let store = self.store  {
-                store.startPayment(product: .full)
+                store.startPayment(product: .Full)
             }
         }
 
@@ -124,6 +176,8 @@ extension PurchasesViewController {
         view.addSubview(removeAdsView)
         view.addSubview(cropsLimitView)
         view.addSubview(fullVersionView)
+        view.addSubview(currentStatusLabel)
+        view.addSubview(restorePaymentButton)
 
     }
 
@@ -152,6 +206,12 @@ extension PurchasesViewController {
                 fullVersionView.topAnchor.constraint(equalTo: cropsLimitView.bottomAnchor, constant: 20),
                 fullVersionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
                 fullVersionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+
+                currentStatusLabel.topAnchor.constraint(equalTo: fullVersionView.bottomAnchor, constant: 30),
+                currentStatusLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
+                restorePaymentButton.topAnchor.constraint(equalTo: currentStatusLabel.bottomAnchor, constant: 20),
+                restorePaymentButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
             ]
         )
     }

@@ -43,7 +43,7 @@ extension UIButton {
         widthAnchor.constraint(equalToConstant: 40).isActive = true
         layer.cornerRadius = 20
 
-        titleLabel?.font = Constants.Fonts.letterTitle
+        titleLabel?.font = Constants.Fonts.letterTitle?.withSize(25)
         titleLabel?.textColor = Constants.Colors.mainWhite
         setTitle(letter.rawValue, for: .normal)
 

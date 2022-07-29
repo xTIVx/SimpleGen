@@ -19,6 +19,20 @@ class MainViewController: UIViewController {
     private var mainRewardedAd: GADRewardedAd?
     private var bottomBannerAd: GADBannerView?
 
+    private let parentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+
+        return view
+    }()
+
+    private let spaceFillerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+
+        return view
+    }()
+
     private let removeAds: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -167,7 +181,6 @@ class MainViewController: UIViewController {
         button.configuration = config
         button.tag = 101
 
-
         return button
     }()
 
@@ -189,37 +202,12 @@ class MainViewController: UIViewController {
             self.viewModel.updatePreferredCombo(combo: newValue)
         }
         if let ads = self.ads {
-            ads.loadRewardedAd(withAdUnitID: "ca-app-pub-3940256099942544/1712485313") { [weak self] ad in
+            ads.loadRewardedAd(withAdUnitID: "ca-app-pub-4130550926106659/4712378772") { [weak self] ad in
                 guard let self = self, let ad = ad else { return }
                 self.mainRewardedAd = ad
                 self.mainRewardedAd!.fullScreenContentDelegate = self
             }
         }
-    }
-
-    func setupBindings() {
-        
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        if let rawValue = UserDefaults.standard.string(forKey: "ProductStatus"),
-           let productStatus = Product(rawValue: rawValue) {
-            appDelegate.purchaseStatus = productStatus
-        }
-
-        appDelegate.$purchaseStatus.sink { [weak self] product in
-            guard let self = self else { return }
-            if product == .free || product == .crops {
-                self.ads = Ads(delegate: self)
-                self.mainRewardedAd = self.ads?.createRewardedAd()
-                self.bottomBannerAd = self.ads?.createSmallBanner(adUnitID: "ca-app-pub-3940256099942544/2934735716")
-                //Constants.AdIdentifiers.bottomAd
-            }
-            else {
-                if self.mainRewardedAd != nil { self.mainRewardedAd = nil }
-                if self.bottomBannerAd != nil { self.bottomBannerAd?.isHidden = true }
-                if self.ads != nil { self.ads = nil }
-
-            }
-        }.store(in: &cancellable)
     }
 
     @objc private func buttonTapped(_ sender: UIButton) {
@@ -230,7 +218,7 @@ class MainViewController: UIViewController {
             clearButton.isHidden = true
             listOfCropsTableView.reloadData()
         case 100:
-            if appDelegate.purchaseStatus == .crops || appDelegate.purchaseStatus == .full {
+            if appDelegate.purchaseStatus == .Crops || appDelegate.purchaseStatus == .Full {
                 viewModel.addCropRow()
                 clearButton.isHidden = false
                 listOfCropsTableView.reloadData()
@@ -252,7 +240,7 @@ class MainViewController: UIViewController {
             } else if viewModel.getPreferredCombo().values.reduce(0, { $0 + $1 }) != 6 {
                 alert.showAlert(parent: self, alertType: .preferredCombo)
             } else if viewModel.isAllLettersAreSet() {
-                if appDelegate.purchaseStatus == .free || appDelegate.purchaseStatus == .crops {
+                if appDelegate.purchaseStatus == .Free || appDelegate.purchaseStatus == .Crops {
                     if let rewardedAd = self.mainRewardedAd {
                         ads?.showRewardedAd(rewardedAd: rewardedAd)
                     }
@@ -266,15 +254,9 @@ class MainViewController: UIViewController {
             } else {
                 alert.showAlert(parent: self, alertType: .foundEmptyGene)
             }
-        case 115:
-            let pickerController = UIImagePickerController()
-            pickerController.sourceType = .camera
-            pickerController.delegate = self
-            pickerController.allowsEditing = true
-            present(pickerController, animated: true)
         case 200:
             present(PurchasesViewController(), animated: true)
-        
+
         default:
             break
         }
@@ -291,11 +273,42 @@ class MainViewController: UIViewController {
 
 private extension MainViewController {
 
+    func setupBindings() {
+
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        if let rawValue = UserDefaults.standard.string(forKey: "ProductStatus"),
+           let productStatus = Product(rawValue: rawValue) {
+            appDelegate.purchaseStatus = productStatus
+        }
+
+        appDelegate.$purchaseStatus.sink { [weak self] product in
+            guard let self = self else { return }
+            if product == .Free || product == .Crops {
+                self.ads = Ads(delegate: self)
+                self.mainRewardedAd = self.ads?.createRewardedAd()
+                self.bottomBannerAd = self.ads?.createSmallBanner(adUnitID: "ca-app-pub-4130550926106659/4900366445")
+                //Constants.AdIdentifiers.bottomAd
+            }
+            else {
+                if self.mainRewardedAd != nil { self.mainRewardedAd = nil }
+                if self.bottomBannerAd != nil { self.bottomBannerAd?.isHidden = true }
+                if self.ads != nil { self.ads = nil }
+                self.removeAds.isHidden = true
+            }
+        }.store(in: &cancellable)
+
+        viewModel.$crops
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] items in
+                self?.listOfCropsTableView.reloadData()
+            }
+            .store(in: &cancellable)
+    }
+
     func setupView() {
         clearButton.isHidden = viewModel.getSamplesCount() == 0
         view.backgroundColor = Constants.Colors.background
         addButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        photoButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         clearButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         calculateButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         removeAds.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
@@ -304,41 +317,48 @@ private extension MainViewController {
         listOfCropsTableView.dataSource = self
         listOfCropsTableView.register(GenesTableViewCell.self, forCellReuseIdentifier: GenesTableViewCell.identifier)
 
-        view.addSubview(removeAds)
-        view.addSubview(firstActionLabel)
-        view.addSubview(listView)
-        view.addSubview(secondActionLabel)
-        view.addSubview(preferredPatternView)
-        view.addSubview(calculateButton)
+        view.addSubview(parentView)
+
+        parentView.addSubview(removeAds)
+        parentView.addSubview(firstActionLabel)
+        parentView.addSubview(listView)
+        parentView.addSubview(secondActionLabel)
+        parentView.addSubview(preferredPatternView)
+        parentView.addSubview(spaceFillerView)
+        spaceFillerView.addSubview(calculateButton)
         listView.addSubview(separator)
         listView.addSubview(clearButton)
-        listView.addSubview(photoButton)
         listView.addSubview(addButton)
         listView.addSubview(listOfCropsTableView)
-        view.addSubview(popup)
+        parentView.addSubview(popup)
 
         if let bottomAd = bottomBannerAd {
-            view.addSubview(bottomAd)
+            parentView.addSubview(bottomAd)
         }
     }
 
     func setupConstraints() {
         NSLayoutConstraint.activate(
             [
-                popup.topAnchor.constraint(equalTo: view.topAnchor),
-                popup.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                popup.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                popup.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                parentView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                parentView.widthAnchor.constraint(equalToConstant: Constants.ScreenSizeConfig.isIPad ? view.bounds.size.width / 2 : view.bounds.size.width - 20),
+                parentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                parentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+                popup.topAnchor.constraint(equalTo: parentView.topAnchor),
+                popup.leadingAnchor.constraint(equalTo: parentView.leadingAnchor),
+                popup.trailingAnchor.constraint(equalTo: parentView.trailingAnchor),
+                popup.bottomAnchor.constraint(equalTo: parentView.bottomAnchor),
 
                 removeAds.bottomAnchor.constraint(equalTo: listView.topAnchor),
                 removeAds.trailingAnchor.constraint(equalTo: listView.trailingAnchor),
 
-                firstActionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                firstActionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+                firstActionLabel.topAnchor.constraint(equalTo: parentView.topAnchor),
+                firstActionLabel.leadingAnchor.constraint(equalTo: parentView.leadingAnchor, constant: 10),
 
                 listView.topAnchor.constraint(equalTo: firstActionLabel.bottomAnchor, constant: 5),
-                listView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-                listView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+                listView.centerXAnchor.constraint(equalTo: parentView.centerXAnchor),
+                listView.widthAnchor.constraint(equalTo: parentView.widthAnchor),
                 listView.heightAnchor.constraint(equalToConstant: view.bounds.height / 3),
 
                 separator.heightAnchor.constraint(equalToConstant: 1),
@@ -347,17 +367,12 @@ private extension MainViewController {
                 separator.topAnchor.constraint(equalTo: addButton.bottomAnchor),
 
                 clearButton.leadingAnchor.constraint(equalTo: listView.leadingAnchor, constant: 15),
-                clearButton.topAnchor.constraint(equalTo: listView.topAnchor, constant: 5),
+                clearButton.centerYAnchor.constraint(equalTo: addButton.centerYAnchor),
 
                 addButton.topAnchor.constraint(equalTo: listView.topAnchor, constant: 5),
                 addButton.trailingAnchor.constraint(equalTo: listView.trailingAnchor, constant: -5),
                 addButton.widthAnchor.constraint(equalToConstant: Constants.ScreenSizeConfig.isSmallDevice ? 30 : 50),
                 addButton.heightAnchor.constraint(equalToConstant: Constants.ScreenSizeConfig.isSmallDevice ? 30 : 50),
-
-                photoButton.topAnchor.constraint(equalTo: listView.topAnchor, constant: 5),
-                photoButton.trailingAnchor.constraint(equalTo: addButton.leadingAnchor, constant: Constants.ScreenSizeConfig.isSmallDevice ? -10 : 0),
-                photoButton.widthAnchor.constraint(equalToConstant: Constants.ScreenSizeConfig.isSmallDevice ? 35 : 50),
-                photoButton.heightAnchor.constraint(equalToConstant: Constants.ScreenSizeConfig.isSmallDevice ? 30 : 50),
 
                 listOfCropsTableView.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 5),
                 listOfCropsTableView.leadingAnchor.constraint(equalTo: listView.leadingAnchor, constant: 5),
@@ -368,17 +383,19 @@ private extension MainViewController {
                     equalTo: listView.bottomAnchor,
                     constant: Constants.ScreenSizeConfig.isSmallDevice ? 10 : 30
                 ),
-                secondActionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+                secondActionLabel.leadingAnchor.constraint(equalTo: preferredPatternView.leadingAnchor),
 
                 preferredPatternView.topAnchor.constraint(equalTo: secondActionLabel.bottomAnchor, constant: 5),
-                preferredPatternView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-                preferredPatternView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+                preferredPatternView.leadingAnchor.constraint(equalTo: parentView.leadingAnchor),
+                preferredPatternView.trailingAnchor.constraint(equalTo: parentView.trailingAnchor),
 
-                calculateButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                calculateButton.topAnchor.constraint(greaterThanOrEqualTo: preferredPatternView.bottomAnchor, constant: 10),
-                calculateButton.bottomAnchor.constraint(
-                    equalTo: bottomBannerAd != nil ? bottomBannerAd!.topAnchor : view.bottomAnchor,
-                    constant: bottomBannerAd != nil ? -20 : -60),
+                spaceFillerView.leadingAnchor.constraint(equalTo: parentView.leadingAnchor),
+                spaceFillerView.topAnchor.constraint(equalTo: preferredPatternView.bottomAnchor),
+                spaceFillerView.trailingAnchor.constraint(equalTo: parentView.trailingAnchor),
+                spaceFillerView.bottomAnchor.constraint(equalTo: bottomBannerAd != nil ? bottomBannerAd!.topAnchor : view.bottomAnchor),
+
+                calculateButton.centerXAnchor.constraint(equalTo: spaceFillerView.centerXAnchor),
+                calculateButton.centerYAnchor.constraint(equalTo: spaceFillerView.centerYAnchor),
             ]
         )
         guard let bottomAd = bottomBannerAd else { return }
@@ -391,6 +408,8 @@ private extension MainViewController {
             ]
         )
     }
+
+
 }
 
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
@@ -448,17 +467,5 @@ extension MainViewController: ADS {
             self.mainRewardedAd = ad
             self.mainRewardedAd!.fullScreenContentDelegate = self
         }
-    }
-}
-
-extension MainViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true)
-    }
-
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        picker.dismiss(animated: true)
-        guard let image = info[.editedImage] as? UIImage else { return }
-        viewModel.getGenesFromPhoto(photo: image)
     }
 }

@@ -5,6 +5,7 @@
 //  Created by Igor Chernobai on 5/25/22.
 //
 
+import Combine
 import Foundation
 import StoreKit
 
@@ -47,7 +48,6 @@ final class Purchases: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
 
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         transactions.forEach { transaction in
-            print(transaction.payment.productIdentifier)
             switch transaction.transactionState {
             case .purchasing:
                 print("Purchasing")
@@ -64,12 +64,20 @@ final class Purchases: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
                 SKPaymentQueue.default().finishTransaction(transaction)
                 print("Failed")
             case .restored:
-                print("Restored")
+                if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+                   let product = Product(rawValue: transaction.payment.productIdentifier) {
+                    UserDefaults.standard.set(transaction.payment.productIdentifier, forKey: "ProductStatus")
+                    appDelegate.purchaseStatus = product
+                }
             case .deferred:
                 print("Deferred")
             default:
                 break
             }
         }
+    }
+
+    func restorePayment() {
+        SKPaymentQueue.default().restoreCompletedTransactions()
     }
 }

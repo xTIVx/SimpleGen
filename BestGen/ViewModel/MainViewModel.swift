@@ -13,42 +13,9 @@ class MainViewModel {
 
     // MARK: Properties
 
-    private var crops = [
-        Crop(letters: [
-            .init(key: .G, comparedGens: nil),
-            .init(key: .W, comparedGens: nil),
-            .init(key: .G, comparedGens: nil),
-            .init(key: .W, comparedGens: nil),
-            .init(key: .G, comparedGens: nil),
-            .init(key: .W, comparedGens: nil)
-        ]),
-        Crop(letters: [
-            .init(key: .H, comparedGens: nil),
-            .init(key: .G, comparedGens: nil),
-            .init(key: .H, comparedGens: nil),
-            .init(key: .G, comparedGens: nil),
-            .init(key: .W, comparedGens: nil),
-            .init(key: .H, comparedGens: nil)
-        ]),
-        Crop(letters: [
-            .init(key: .G, comparedGens: nil),
-            .init(key: .G, comparedGens: nil),
-            .init(key: .Y, comparedGens: nil),
-            .init(key: .W, comparedGens: nil),
-            .init(key: .G, comparedGens: nil),
-            .init(key: .X, comparedGens: nil)
-        ]),
-        Crop(letters: [
-            .init(key: .H, comparedGens: nil),
-            .init(key: .Y, comparedGens: nil),
-            .init(key: .G, comparedGens: nil),
-            .init(key: .H, comparedGens: nil),
-            .init(key: .H, comparedGens: nil),
-            .init(key: .H, comparedGens: nil)
-        ]),
-    ]
+    @Published var crops = [Crop]()
 
-    private var preferredCombo: [LetterKey: Int] = [.G: 4, .Y: 2, .H: 0]
+    private var preferredCombo: [LetterKey: Int] = [.G: 3, .Y: 3, .H: 0]
 
     private var topCrop: Crop?
 
@@ -202,8 +169,13 @@ class MainViewModel {
         let recognizer = TextRecognizer()
         recognizer.textRecognize(image: photo) { [ weak self ] textArray in
             textArray.forEach { possibleLetters in
-                guard let crop = self?.parseGenes(possibleGenes: possibleLetters),
-                crop.letters.count == 6 else {return}
+                print(possibleLetters)
+                guard let crop = self?.parseGenes(possibleGenes: possibleLetters)
+                /*crop.letters.count == 6*/ else {
+                    // return error message popup
+                    return
+                }
+                self?.crops.append(crop)
             }
         }
     }

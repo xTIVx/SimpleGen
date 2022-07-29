@@ -18,7 +18,7 @@ class PreferredPatternView: UIView {
             if oldValue != preferredCombo {
                 comboDidChange?(preferredCombo)
             }
-            clearButton.isHidden = counter != 6
+            clearButton.isHidden = counter == 0
         }
     }
     var comboDidChange: (([LetterKey: Int]) -> ())?

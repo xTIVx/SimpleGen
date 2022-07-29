@@ -8,10 +8,6 @@
 import Foundation
 import UIKit
 
-let isSmallDevice = {
-    return
-}()
-
 enum Constants {
 
     enum Colors {
@@ -34,12 +30,13 @@ enum Constants {
 
     enum ScreenSizeConfig {
         static let isSmallDevice = UIScreen.main.bounds.height < 812
+        static let isIPad = UIDevice.current.userInterfaceIdiom == .pad
     }
 }
 
 enum Product: String, CaseIterable {
-    case free = "free"
-    case ads = "com.tiv.c.ads"
-    case crops = "com.tiv.c.crops"
-    case full = "com.tiv.c.full"
+    case Free = "free"
+    case Ads = "com.tiv.c.ads"
+    case Crops = "com.tiv.c.crops"
+    case Full = "com.tiv.c.full"
 }
