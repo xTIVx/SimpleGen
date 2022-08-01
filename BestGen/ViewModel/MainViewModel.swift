@@ -23,8 +23,7 @@ class MainViewModel {
         return crops.map { crop in
             crop.letters.filter { $0.key == .empty }
         }
-            .first!
-            .isEmpty
+        .isEmpty
     }
 
     // MARK: CRUD funcs

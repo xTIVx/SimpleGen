@@ -294,12 +294,13 @@ private extension MainViewController {
                         self.bottomBannerAd = self.ads?.createSmallBanner(adUnitID: "ca-app-pub-4130550926106659/4900366445")
                     }
                 }
-                //Constants.AdIdentifiers.bottomAd
             }
-            else {
+            else if product == .Ads || product == .Full {
                 if self.mainRewardedAd != nil { self.mainRewardedAd = nil }
                 if self.bottomBannerAd != nil { self.bottomBannerAd?.isHidden = true }
                 if self.ads != nil { self.ads = nil }
+            }
+            else if product == .Full {
                 self.removeAds.isHidden = true
             }
         }.store(in: &cancellable)

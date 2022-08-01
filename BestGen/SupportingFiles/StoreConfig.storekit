@@ -16,7 +16,7 @@
         }
       ],
       "productID" : "com.tiv.c.ads",
-      "referenceName" : "removeADS",
+      "referenceName" : "Ads",
       "type" : "NonConsumable"
     },
     {
