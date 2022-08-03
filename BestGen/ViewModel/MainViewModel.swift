@@ -20,8 +20,8 @@ class MainViewModel {
     private var topCrop: Crop?
 
     func isAllLettersAreSet() -> Bool {
-        return crops.map { crop in
-            crop.letters.filter { $0.key == .empty }
+        return crops.filter { crop in
+            crop.letters.contains(where: { $0.key == .empty })
         }
         .isEmpty
     }
