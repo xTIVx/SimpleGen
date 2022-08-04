@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Crop {
+struct Crop: Decodable, Encodable {
     var letters: [Letter]
     var parents: [Crop]?
     var betterScore: Int {
@@ -32,7 +32,7 @@ struct Crop {
     }
 }
 
-struct Letter: Equatable {
+struct Letter: Equatable, Decodable, Encodable {
     var key: LetterKey = .empty
     var comparedGens: [LetterKey]?
     var weight: Float {
@@ -53,7 +53,7 @@ struct Letter: Equatable {
     }
 }
 
-enum LetterKey: String {
+enum LetterKey: String, Decodable, Encodable {
     case Y = "Y"
     case G = "G"
     case H = "H"

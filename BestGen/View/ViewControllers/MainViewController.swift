@@ -47,6 +47,7 @@ class MainViewController: UIViewController {
         button.setAttributedTitle(attributedString, for: .normal)
         button.setTitleColor(Constants.Colors.mainGreen, for: .normal)
         button.tag = 200
+        button.isHidden = Constants.ScreenSizeConfig.isSmallDevice
 
         return button
     }()
@@ -235,7 +236,9 @@ class MainViewController: UIViewController {
                 alert.showAlert(parent: self, alertType: .preferredCombo)
             } else if viewModel.isAllLettersAreSet() {
                 if appDelegate.purchaseStatus == .Free || appDelegate.purchaseStatus == .Crops {
-                    if let rewardedAd = self.mainRewardedAd {
+                    if let rewardedAd = self.mainRewardedAd,
+                       rewardedAd.responseInfo.responseIdentifier != nil {
+                        // MARK: - обработать если рекламы нет
                         ads?.showRewardedAd(rewardedAd: rewardedAd)
                     } else {
                         if let crop = viewModel.getTopCrop() {
@@ -283,16 +286,19 @@ private extension MainViewController {
 
         appDelegate.$purchaseStatus.sink { [weak self] product in
             guard let self = self else { return }
+            if let cropsData = UserDefaults.standard.getAllCrops {
+                self.viewModel.crops = cropsData
+            }
             if product == .Free || product == .Crops {
                 self.ads = Ads(delegate: self)
                 if let ads = self.ads {
-                    ads.loadRewardedAd(withAdUnitID: "ca-app-pub-4130550926106659/4712378772") { [weak self] ad in
+                    ads.loadRewardedAd(withAdUnitID: Constants.AdIdentifiers.rewardedAd) { [weak self] ad in
                         guard let self = self, let ad = ad else { return }
                         self.mainRewardedAd = ad
                         self.mainRewardedAd!.fullScreenContentDelegate = self
-                        self.mainRewardedAd = self.ads?.createRewardedAd()
-                        self.bottomBannerAd = self.ads?.createSmallBanner(adUnitID: "ca-app-pub-4130550926106659/4900366445")
                     }
+                    self.mainRewardedAd = ads.createRewardedAd()
+                    self.bottomBannerAd = ads.createSmallBanner(adUnitID: Constants.AdIdentifiers.bottomAd)
                 }
             }
             else if product == .Ads || product == .Full {

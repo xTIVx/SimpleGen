@@ -55,10 +55,12 @@ class MainViewModel {
 
     func removeCrop(at row: Int) {
         crops.remove(at: row)
+        UserDefaults.standard.saveAllCrops(allCrops: crops)
     }
 
     func removeAllCrops() {
         crops.removeAll()
+        UserDefaults.standard.saveAllCrops(allCrops: crops)
     }
 
     func getSamplesCount() -> Int {
@@ -71,17 +73,21 @@ class MainViewModel {
 
     func updateCrop(cropIndex: Int, letterIndex: Int, newKey: LetterKey, completion: ((Bool)->())) {
         crops[cropIndex].letters[letterIndex].key = newKey
-//        if !crops[cropIndex].letters.contains(where: { $0.key == .empty }) {
-            let actualCropLetters = crops[cropIndex].letters
-            let crops = crops.filter { crop in
-                let comparedCount = zip(crop.letters, actualCropLetters)
-                    .filter { $0.0.key == $0.1.key}
-                    .map{ $0.0 }
+        let actualCropLetters = crops[cropIndex].letters
+        let crops = crops.filter { crop in
+            let comparedCount = zip(crop.letters, actualCropLetters)
+                .filter { $0.0.key == $0.1.key}
+                .map{ $0.0 }
 
-                return comparedCount.count == 6
-            }
-            crops.count > 1 ? completion(false) : completion(true)
-//        }
+            return comparedCount.count == 6
+        }
+        if crops.count > 1 {
+            completion(false)
+        } else {
+            completion(true)
+            UserDefaults.standard.saveAllCrops(allCrops: self.crops)
+        }
+//        crops.count > 1 ? completion(false) : completion(true)
     }
 
     // MARK: Crossbreed funcs
@@ -170,7 +176,7 @@ class MainViewModel {
             textArray.forEach { possibleLetters in
                 print(possibleLetters)
                 guard let crop = self?.parseGenes(possibleGenes: possibleLetters)
-                /*crop.letters.count == 6*/ else {
+                        /*crop.letters.count == 6*/ else {
                     // return error message popup
                     return
                 }

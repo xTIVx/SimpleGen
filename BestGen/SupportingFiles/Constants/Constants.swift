@@ -24,8 +24,8 @@ enum Constants {
     }
 
     enum AdIdentifiers {
-        static let rewardedAd = "ca-app-pub-3723771389568265/8048988554"
-        static let bottomAd = "ca-app-pub-3723771389568265/4301315231"
+        static let rewardedAd = "ca-app-pub-3940256099942544/1712485313"
+        static let bottomAd = "ca-app-pub-3940256099942544/2934735716"
     }
 
     enum ScreenSizeConfig {
